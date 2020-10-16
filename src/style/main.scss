@@ -1,0 +1,26 @@
+
+$subMenuBg:#1f2d3d;
+$menuHover:#001528;
+// 导航主色调
+$Bg:#1989fa;
+$bodyBy:#f2f2f2;
+
+
+body {
+  color: #333;
+}
+
+html {
+  box-sizing: border-box;
+}
+p{
+  margin: 0;
+  padding: 0;
+}
+
+%flex_space_between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
