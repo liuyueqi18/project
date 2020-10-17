@@ -134,7 +134,7 @@ export default defineComponent({
       AV.User.logIn(state.username, state.password).then(
         (user: any) => {
           localStorage.setItem("rym_user_id", "klsasalsklaklclksancas");
-          localStorage.setItem("userInfo", user);
+          localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
             name: "Homepage",
           });
@@ -158,13 +158,17 @@ export default defineComponent({
       user.signUp().then(
         (user: any) => {
           localStorage.setItem("rym_user_id", user.id);
-          localStorage.setItem("userInfo", user);
+          localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
             name: "Homepage",
           });
         },
         (error) => {
-          Toast(error.rawMessage);
+          try {
+            Toast(error.rawMessage);
+          } catch (error) {
+            //
+          }
         }
       );
     }
@@ -178,27 +182,25 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
-@import "@/style/main.scss";
+<style scoped lang="postcss">
 .login {
-  .content {
+  & .content {
     padding: 0 16px;
     margin-top: 100px;
-    .logo {
+    & .logo {
       margin: 0 auto;
       display: block;
       width: 80px;
       margin-bottom: 30px;
     }
-    .button {
+    & .button {
       padding: 16px;
-      .remarks {
-        color: $Bg;
+      & .remarks {
+        color: #1989fa;
         margin: 4px 0;
         font-size: 12px;
         text-align: right;
       }
-      // @extend %flex_space_between;
     }
   }
 }
