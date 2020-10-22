@@ -83,8 +83,8 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const state = reactive<State>({
-      username: "刘越奇",
-      password: "liuyq123",
+      username: "",
+      password: "",
       passwordType: "password", // 是否展示密码明文
       rightIcon: "closed-eye", // 密码右边的icon
       isLogin: true, // 是否显示登录 false则是注册
