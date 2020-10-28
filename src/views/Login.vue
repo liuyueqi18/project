@@ -53,6 +53,11 @@
           </p>
         </div>
       </van-form>
+      <van-overlay :show="state.isShowOverlay">
+        <div class="overlay_loading">
+          <van-loading type="spinner" size="30" vertical>加载中...</van-loading>
+        </div>
+      </van-overlay>
     </div>
   </div>
 </template>
@@ -76,6 +81,7 @@ type State = {
   passwordType: string;
   rightIcon: string;
   isLogin: boolean;
+  isShowOverlay: boolean;
 };
 export default defineComponent({
   name: "Login",
@@ -88,6 +94,7 @@ export default defineComponent({
       passwordType: "password", // 是否展示密码明文
       rightIcon: "closed-eye", // 密码右边的icon
       isLogin: true, // 是否显示登录 false则是注册
+      isShowOverlay: false, // 遮罩
     });
     function CheckPassWord(password: string) {
       const str = password;
@@ -131,6 +138,7 @@ export default defineComponent({
         Toast("请输入字母加数字组合的密码，且长度不小于8位");
         return;
       }
+      state.isShowOverlay = true;
       AV.User.logIn(state.username, state.password).then(
         (user: any) => {
           localStorage.setItem("rym_user_id", "klsasalsklaklclksancas");
@@ -140,7 +148,12 @@ export default defineComponent({
           });
         },
         (error) => {
-          Toast(error.rawMessage);
+          state.isShowOverlay = false;
+          try {
+            Toast(error.rawMessage);
+          } catch (error) {
+            //
+          }
         }
       );
     }
@@ -155,6 +168,7 @@ export default defineComponent({
       const user = new AV.User();
       user.setUsername(state.username);
       user.setPassword(state.password);
+      state.isShowOverlay = true;
       user.signUp().then(
         (user: any) => {
           localStorage.setItem("rym_user_id", user.id);
@@ -164,6 +178,7 @@ export default defineComponent({
           });
         },
         (error) => {
+          state.isShowOverlay = false;
           try {
             Toast(error.rawMessage);
           } catch (error) {
@@ -202,6 +217,19 @@ export default defineComponent({
         text-align: right;
       }
     }
+  }
+  & .overlay_loading {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>
