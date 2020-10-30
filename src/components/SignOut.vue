@@ -9,8 +9,8 @@
         @click="state.isShowUserDialog = false"
       >
         <div class="user_dialog" @click.stop>
-          <div class="user_select">用户</div>
-          <div class="user_select" @click="signOut">退出</div>
+          <div class="user_select" @click="goUserPage()">用户</div>
+          <div class="user_select" @click="signOut()">退出</div>
         </div>
       </van-overlay>
     </transition>
@@ -18,17 +18,17 @@
 </template>
 
 <script lang="ts">
-import dayjs from "dayjs";
 type State = {
   userInfo: any;
   isShowUserDialog: boolean;
 };
 import { defineComponent, reactive } from "vue";
-import { useRouter } from "vue-router";
-import { Dialog } from "vant";
+import { useRouter, useRoute } from "vue-router";
+import { Dialog, Toast } from "vant";
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const state = reactive<State>({
       userInfo: JSON.parse(localStorage.getItem("userInfo" as any) as any),
       isShowUserDialog: false,
@@ -45,16 +45,26 @@ export default defineComponent({
       })
         .then(() => {
           localStorage.clear();
+          state.isShowUserDialog = false;
           router.push({ name: "Login" });
         })
         .catch(() => {
-          // on cancel
+          state.isShowUserDialog = false;
         });
+    }
+    function goUserPage() {
+      state.isShowUserDialog = false;
+      if (route.name === "User") {
+        Toast("当前就是用户页");
+        return;
+      }
+      router.push({ name: "User" });
     }
     return {
       state,
       showUserDialog,
       signOut,
+      goUserPage,
     };
   },
 });

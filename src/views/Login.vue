@@ -55,7 +55,7 @@
       </van-form>
       <van-overlay :show="state.isShowOverlay">
         <div class="overlay_loading">
-          <van-loading type="spinner" size="30" vertical>加载中...</van-loading>
+          <van-loading type="spinner" size="30" vertical>登录中...</van-loading>
         </div>
       </van-overlay>
     </div>
@@ -141,7 +141,7 @@ export default defineComponent({
       state.isShowOverlay = true;
       AV.User.logIn(state.username, state.password).then(
         (user: any) => {
-          localStorage.setItem("rym_user_id", "klsasalsklaklclksancas");
+          localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
             name: "Homepage",
@@ -149,11 +149,7 @@ export default defineComponent({
         },
         (error) => {
           state.isShowOverlay = false;
-          try {
-            Toast(error.rawMessage);
-          } catch (error) {
-            //
-          }
+          Toast(error.rawMessage);
         }
       );
     }
@@ -179,11 +175,7 @@ export default defineComponent({
         },
         (error) => {
           state.isShowOverlay = false;
-          try {
-            Toast(error.rawMessage);
-          } catch (error) {
-            //
-          }
+          Toast(error.rawMessage);
         }
       );
     }
