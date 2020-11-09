@@ -39,6 +39,7 @@
         @click="handleOpenSelectDialog('genderType')"
       />
     </van-cell-group>
+    <div style="height:15px;"></div>
     <div class="btn_style">
       <van-button type="primary" @click="setUserInfo()" block>保 存</van-button>
     </div>
@@ -171,10 +172,14 @@ export default defineComponent({
       User.set("email", state.userInfo.email);
       User.set("birthTime", state.userInfo.birthTime);
       User.set("gender", state.userInfo.genderCode);
-      User.save().then(() => {
-        Toast("成功");
-        getUserInfo();
-      });
+      User.save()
+        .then(() => {
+          Toast("成功");
+          getUserInfo();
+        })
+        .catch((error: any) => {
+          Toast(error.rawMessage);
+        });
     }
     function checkEmail() {
       Dialog.confirm({

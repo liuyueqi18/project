@@ -117,8 +117,22 @@ export default defineComponent({
       if (!str || str.length > 4) {
         return false;
       }
-      const reg1 = new RegExp(/[\u4e00-\u9fa5]/gm);
-      if (reg1.test(str)) {
+      const reg = new RegExp(/[\u4e00-\u9fa5]/gm);
+      if (reg.test(str)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    function CheckEmail(email: string) {
+      const str = email;
+      if (str === "") {
+        return false;
+      }
+      const reg = new RegExp(
+        "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
+      );
+      if (reg.test(str)) {
         return true;
       } else {
         return false;
@@ -130,8 +144,8 @@ export default defineComponent({
       state.passwordType = state.rightIcon === "closed-eye" ? "password" : "";
     }
     function handleLogin() {
-      if (!CheckUserName(state.username)) {
-        Toast("请输入2-4位中文名字");
+      if (!CheckUserName(state.username) && !CheckEmail(state.username)) {
+        Toast("请输入2-4位中文名字或者邮箱");
         return;
       }
       if (!CheckPassWord(state.password)) {
