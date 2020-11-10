@@ -16,7 +16,10 @@
         placeholder="请输入邮箱"
         input-align="right"
       >
-        <template #button v-if="!state.userInfo.emailVerified">
+        <template
+          #button
+          v-if="!state.userInfo.emailVerified && state.userInfo.email"
+        >
           <van-button size="small" type="primary" @click="checkEmail()"
             >验证</van-button
           >
@@ -83,18 +86,12 @@
 </template>
 
 <script lang="ts">
-import AV from "leancloud-storage";
 import dayjs from "dayjs";
-AV.init({
-  appId: "Q8A65T5W8qkMkbWI17g7vAu0-gzGzoHsz",
-  appKey: "JXUCxIYpDrIF87LVpYlK9egD",
-  serverURL: "https://q8a65t5w.lc-cn-n1-shared.com",
-});
 import { defineComponent, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Dialog, Toast } from "vant";
-import { Store } from "vuex";
 import store from "../store";
+import { emailVerify, getUserInfoApi, setUserInfoApi } from "@/services";
 type State = {
   userId: string;
   userInfo: {
@@ -148,8 +145,7 @@ export default defineComponent({
       genderList: store.state.genderList,
     });
     function getUserInfo() {
-      const User = new AV.Query("User");
-      User.get(state.userId).then((res: any) => {
+      getUserInfoApi(state.userId).then((res: any) => {
         state.userInfo.username = res.attributes.username;
         state.userInfo.email = res.attributes.email;
         state.userInfo.emailVerified = res.attributes.emailVerified;
@@ -167,19 +163,15 @@ export default defineComponent({
         Toast("姓名必填");
         return;
       }
-      const User = AV.Object.createWithoutData("User", state.userId);
-      User.set("username", state.userInfo.username);
-      User.set("email", state.userInfo.email);
-      User.set("birthTime", state.userInfo.birthTime);
-      User.set("gender", state.userInfo.genderCode);
-      User.save()
-        .then(() => {
-          Toast("成功");
-          getUserInfo();
-        })
-        .catch((error: any) => {
-          Toast(error.rawMessage);
-        });
+      const param = {
+        username: state.userInfo.username,
+        email: state.userInfo.email,
+        birthTime: state.userInfo.birthTime,
+        gender: state.userInfo.genderCode,
+      };
+      setUserInfoApi(state.userId, param).then((res) => {
+        Toast("保存成功");
+      });
     }
     function checkEmail() {
       Dialog.confirm({
@@ -187,13 +179,9 @@ export default defineComponent({
         message: `是否确认向${state.userInfo.email}发送邮件验证`,
       })
         .then(() => {
-          AV.User.requestEmailVerify(state.userInfo.email)
-            .then(() => {
-              Toast("已发送");
-            })
-            .catch((error: any) => {
-              Toast(error.rawMessage);
-            });
+          emailVerify(state.userInfo.email).then(() => {
+            Toast("已发送");
+          });
         })
         .catch(() => {
           Toast("取消验证");

@@ -63,15 +63,10 @@
 </template>
 
 <script lang="ts">
-import AV from "leancloud-storage";
-AV.init({
-  appId: "Q8A65T5W8qkMkbWI17g7vAu0-gzGzoHsz",
-  appKey: "JXUCxIYpDrIF87LVpYlK9egD",
-  serverURL: "https://q8a65t5w.lc-cn-n1-shared.com",
-});
 import { defineComponent, reactive } from "vue";
 import { Toast } from "vant";
 import { useRouter } from "vue-router";
+import { userLogin, userRegister } from "@/services/index";
 type Props = {
   //
 };
@@ -153,19 +148,17 @@ export default defineComponent({
         return;
       }
       state.isShowOverlay = true;
-      AV.User.logIn(state.username, state.password).then(
-        (user: any) => {
+      userLogin(state.username, state.password)
+        .then((user: any) => {
           localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
             name: "Homepage",
           });
-        },
-        (error) => {
+        })
+        .catch((error: any) => {
           state.isShowOverlay = false;
-          Toast(error.rawMessage);
-        }
-      );
+        });
     }
     function handleRegister() {
       if (!CheckUserName(state.username)) {
@@ -175,23 +168,18 @@ export default defineComponent({
       if (!CheckPassWord(state.password)) {
         Toast("请输入字母加数字组合的密码，且长度不小于8位");
       }
-      const user = new AV.User();
-      user.setUsername(state.username);
-      user.setPassword(state.password);
       state.isShowOverlay = true;
-      user.signUp().then(
-        (user: any) => {
+      userRegister(state.username, state.password)
+        .then((user: any) => {
           localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
             name: "Homepage",
           });
-        },
-        (error) => {
+        })
+        .catch((error: any) => {
           state.isShowOverlay = false;
-          Toast(error.rawMessage);
-        }
-      );
+        });
     }
     return {
       state,
