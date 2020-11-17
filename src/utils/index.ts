@@ -6,7 +6,7 @@
  */
 export function CheckUserName(username: string) {
   const str = username;
-  if (!str || str.length > 4) {
+  if (!str || str.length > 10 || str.length < 2) {
     return false;
   }
   const reg = new RegExp(/[\u4e00-\u9fa5]/gm);
@@ -25,18 +25,10 @@ export function CheckUserName(username: string) {
  */
 export function CheckPassWord(password: string) {
   const str = password;
-  if (str == null || str.length < 8) {
+  if (!str) {
     return false;
-  }
-  const reg1 = new RegExp(/^[0-9A-Za-z]+$/);
-  if (!reg1.test(str)) {
-    return false;
-  }
-  const reg = new RegExp(/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/);
-  if (reg.test(str)) {
-    return true;
   } else {
-    return false;
+    return true;
   }
 }
 

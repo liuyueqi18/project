@@ -9,6 +9,16 @@
           label="用户名"
           placeholder="用户名"
           :rules="[{ required: true, message: '请填写用户名' }]"
+          key="username"
+        />
+        <van-field
+          v-if="!state.isLogin"
+          v-model="state.email"
+          name="email"
+          label="邮箱"
+          placeholder="邮箱"
+          :rules="[{ required: true, message: '请填写邮箱' }]"
+          key="email"
         />
         <van-field
           v-model="state.password"
@@ -19,6 +29,7 @@
           :right-icon="state.rightIcon"
           @click-right-icon="handlePasswordIcon"
           :rules="[{ required: true, message: '请填写密码' }]"
+          key="password"
         />
         <div class="button">
           <van-button
@@ -74,6 +85,7 @@ type Props = {
 type State = {
   username: string;
   password: string;
+  email: string;
   passwordType: string;
   rightIcon: string;
   isLogin: boolean;
@@ -86,6 +98,7 @@ export default defineComponent({
     const router = useRouter();
     const state = reactive<State>({
       username: "",
+      email: "",
       password: "",
       passwordType: "password", // 是否展示密码明文
       rightIcon: "closed-eye", // 密码右边的icon
@@ -100,11 +113,12 @@ export default defineComponent({
     }
     function handleLogin() {
       if (!CheckUserName(state.username) && !CheckEmail(state.username)) {
-        Toast("请输入2-4位中文名字或者邮箱");
+        Toast("请输入2-10位中文名字或者邮箱");
         return;
       }
+      console.log("Boolean :>> ", Boolean(state.password));
       if (!CheckPassWord(state.password)) {
-        Toast("请输入字母加数字组合的密码，且长度不小于8位");
+        Toast("请输入密码");
         return;
       }
       state.isShowOverlay = true;
@@ -122,14 +136,19 @@ export default defineComponent({
     }
     function handleRegister() {
       if (!CheckUserName(state.username)) {
-        Toast("请输入2-4位中文名字");
+        Toast("请输入2-10位中文名字");
+        return;
+      }
+      if (!CheckEmail(state.email)) {
+        Toast("请输入合法邮箱");
         return;
       }
       if (!CheckPassWord(state.password)) {
-        Toast("请输入字母加数字组合的密码，且长度不小于8位");
+        Toast("请输入密码");
+        return;
       }
       state.isShowOverlay = true;
-      userRegister(state.username, state.password)
+      userRegister(state.username, state.email, state.password)
         .then((user: any) => {
           localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));

@@ -15,6 +15,8 @@
         label="邮箱"
         placeholder="请输入邮箱"
         input-align="right"
+        required
+        :rules="[{ required: true, message: '请输入邮箱' }]"
       >
         <template
           #button
@@ -41,6 +43,13 @@
         readonly
         @click="handleOpenSelectDialog('genderType')"
       />
+      <van-field
+        v-if="state.userInfo.emailVerified"
+        label="修改密码"
+        input-align="right"
+        readonly
+        @click="editPassword()"
+      />
     </van-cell-group>
     <div style="height:15px;"></div>
     <div class="btn_style">
@@ -48,8 +57,8 @@
     </div>
     <div class="user_toast">
       1.邮箱验证通过后可以通过邮箱登录<br />
-      2.邮箱未通过时会有验证按钮<br />
-      3.邮箱更新后会有验证按钮<br />
+      2.邮箱未通过验证时会有验证按钮<br />
+      3.邮箱验证通过以后才可以更改密码<br />
     </div>
     <div>
       <van-popup
@@ -91,7 +100,12 @@ import { defineComponent, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Dialog, Toast } from "vant";
 import store from "../store";
-import { emailVerify, getUserInfoApi, setUserInfoApi } from "@/services";
+import {
+  emailVerify,
+  getUserInfoApi,
+  resetPassword,
+  setUserInfoApi,
+} from "@/services";
 import { CheckEmail, CheckUserName } from "@/utils";
 type State = {
   userId: string;
@@ -161,7 +175,7 @@ export default defineComponent({
     }
     function setUserInfo() {
       if (!CheckUserName(state.userInfo.username)) {
-        Toast("请输入2-4位中文名字");
+        Toast("请输入2-10位中文名字");
         return;
       }
       const param = {
@@ -172,6 +186,7 @@ export default defineComponent({
       };
       setUserInfoApi(state.userId, param).then((res) => {
         Toast("保存成功");
+        getUserInfo();
       });
     }
     function checkEmail() {
@@ -191,6 +206,14 @@ export default defineComponent({
         .catch(() => {
           Toast("取消验证");
         });
+    }
+    function editPassword() {
+      resetPassword(state.userInfo.email).then(() => {
+        setTimeout(() => {
+          localStorage.clear();
+          router.push({ name: "Login" });
+        }, 2000);
+      });
     }
     onMounted(() => {
       getUserInfo();
@@ -241,6 +264,7 @@ export default defineComponent({
       state,
       setUserInfo,
       checkEmail,
+      editPassword,
       handleOpenSelectDialog,
       handleCloseSelectDialog,
       handleChooseSelectValue,
@@ -257,6 +281,9 @@ export default defineComponent({
 .user_page {
   background: #f7f8fa;
   min-height: 100vh;
+  & >>> .van-cell__title {
+    color: #333;
+  }
   & .btn_style {
     padding: 16px 8px;
   }

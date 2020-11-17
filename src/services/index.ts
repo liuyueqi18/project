@@ -31,13 +31,19 @@ export function userLogin(username: string, password: string) {
  * 注册
  * @export
  * @param {string} username
+ * @param {string} email
  * @param {string} password
  * @return {*}
  */
-export function userRegister(username: string, password: string) {
+export function userRegister(
+  username: string,
+  email: string,
+  password: string
+) {
   const user = new AV.User();
   user.setUsername(username);
   user.setPassword(password);
+  user.setEmail(email);
   return new Promise((resolve, reject) => {
     user
       .signUp()
@@ -113,6 +119,26 @@ export function emailVerify(email: string) {
   return new Promise((resolve, reject) => {
     AV.User.requestEmailVerify(email)
       .then((res) => {
+        resolve(res);
+      })
+      .catch((error) => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
+
+/**
+ * 重置密码
+ * @export
+ * @param {string} email
+ * @return {*}
+ */
+export function resetPassword(email: string) {
+  return new Promise((resolve, reject) => {
+    AV.User.requestPasswordReset(email)
+      .then((res) => {
+        Toast("邮件已发送 请注意查收");
         resolve(res);
       })
       .catch((error) => {
