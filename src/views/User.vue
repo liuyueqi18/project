@@ -92,6 +92,7 @@ import { useRouter } from "vue-router";
 import { Dialog, Toast } from "vant";
 import store from "../store";
 import { emailVerify, getUserInfoApi, setUserInfoApi } from "@/services";
+import { CheckEmail, CheckUserName } from "@/utils";
 type State = {
   userId: string;
   userInfo: {
@@ -159,8 +160,8 @@ export default defineComponent({
       });
     }
     function setUserInfo() {
-      if (state.userInfo.username === "") {
-        Toast("姓名必填");
+      if (!CheckUserName(state.userInfo.username)) {
+        Toast("请输入2-4位中文名字");
         return;
       }
       const param = {
@@ -174,6 +175,10 @@ export default defineComponent({
       });
     }
     function checkEmail() {
+      if (!CheckEmail(state.userInfo.email)) {
+        Toast("请输入正确格式邮箱");
+        return;
+      }
       Dialog.confirm({
         title: "验证邮箱",
         message: `是否确认向${state.userInfo.email}发送邮件验证`,
