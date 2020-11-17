@@ -6,9 +6,9 @@
         <van-field
           v-model="state.username"
           name="username"
-          label="用户名"
-          placeholder="用户名"
-          :rules="[{ required: true, message: '请填写用户名' }]"
+          label="用户/邮箱"
+          placeholder="用户/邮箱"
+          :rules="[{ required: true, message: '请填写用户名或邮箱' }]"
           key="username"
         />
         <van-field
@@ -48,20 +48,25 @@
           >
             注册
           </van-button>
-          <p
-            class="remarks"
-            @click="state.isLogin = false"
-            v-if="state.isLogin"
-          >
-            立即注册
-          </p>
-          <p
-            class="remarks"
-            @click="state.isLogin = true"
-            v-if="!state.isLogin"
-          >
-            返回登录
-          </p>
+          <div class="tag_box">
+            <span
+              class="tag"
+              @click="state.isLogin = false"
+              v-if="state.isLogin"
+            >
+              立即注册
+            </span>
+            <span class="tag" @click="handlerReset()" v-if="state.isLogin">
+              重置密码
+            </span>
+            <span
+              class="tag"
+              @click="state.isLogin = true"
+              v-if="!state.isLogin"
+            >
+              返回登录
+            </span>
+          </div>
         </div>
       </van-form>
       <van-overlay :show="state.isShowOverlay">
@@ -75,9 +80,9 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
-import { Toast } from "vant";
+import { Dialog, Toast } from "vant";
 import { useRouter } from "vue-router";
-import { userLogin, userRegister } from "@/services/index";
+import { resetPassword, userLogin, userRegister } from "@/services/index";
 import { CheckEmail, CheckPassWord, CheckUserName } from "@/utils/index";
 type Props = {
   //
@@ -160,11 +165,30 @@ export default defineComponent({
           state.isShowOverlay = false;
         });
     }
+    function handlerReset() {
+      if (!CheckEmail(state.username)) {
+        Toast("用户名请输入绑定邮箱");
+        return;
+      }
+      Dialog.confirm({
+        title: `重置密码`,
+        message: `是否确定向${state.username}邮箱发送重置密码`,
+      })
+        .then(() => {
+          resetPassword(state.username).then(() => {
+            localStorage.clear();
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    }
     return {
       state,
       handlePasswordIcon,
       handleLogin,
       handleRegister,
+      handlerReset,
     };
   },
 });
@@ -183,11 +207,15 @@ export default defineComponent({
     }
     & .button {
       padding: 16px;
-      & .remarks {
-        color: #1989fa;
-        margin: 4px 0;
-        font-size: 12px;
-        text-align: right;
+      & .tag_box {
+        display: flex;
+        justify-content: flex-end;
+        & .tag {
+          color: #1989fa;
+          margin: 4px 0;
+          font-size: 12px;
+          margin-left: 10px;
+        }
       }
     }
   }
