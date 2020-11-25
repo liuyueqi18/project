@@ -100,6 +100,7 @@ export default defineComponent({
   name: "Login",
   props: {},
   setup() {
+    console.log("process :>> ", process.env);
     const router = useRouter();
     const state = reactive<State>({
       username: "",
@@ -110,7 +111,6 @@ export default defineComponent({
       isLogin: true, // 是否显示登录 false则是注册
       isShowOverlay: false, // 遮罩
     });
-
     function handlePasswordIcon() {
       state.rightIcon =
         state.rightIcon === "closed-eye" ? "eye-o" : "closed-eye";
