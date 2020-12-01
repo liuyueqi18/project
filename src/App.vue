@@ -14,7 +14,7 @@ import SignOut from "@/components/SignOut.vue";
 export default defineComponent({
   name: "App",
   components: {
-    SignOut,
+    SignOut
   },
   setup() {
     const route = useRoute();
@@ -24,9 +24,9 @@ export default defineComponent({
     });
     return {
       state,
-      isShowSignOut,
+      isShowSignOut
     };
-  },
+  }
 });
 </script>
 

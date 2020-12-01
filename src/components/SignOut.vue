@@ -31,7 +31,7 @@ export default defineComponent({
     const route = useRoute();
     const state = reactive<State>({
       userInfo: JSON.parse(localStorage.getItem("userInfo" as any) as any),
-      isShowUserDialog: false,
+      isShowUserDialog: false
     });
 
     function showUserDialog() {
@@ -41,7 +41,7 @@ export default defineComponent({
       Dialog.confirm({
         title: "是否退出",
         message: "",
-        confirmButtonColor: "#666",
+        confirmButtonColor: "#666"
       })
         .then(() => {
           localStorage.clear();
@@ -64,9 +64,9 @@ export default defineComponent({
       state,
       showUserDialog,
       signOut,
-      goUserPage,
+      goUserPage
     };
-  },
+  }
 });
 </script>
 

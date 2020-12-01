@@ -29,19 +29,19 @@ export default defineComponent({
     const state = reactive<State>({
       childList: [
         {
-          name: "Todo",
-          nameUrl: "Todo",
-        },
-      ],
+          name: "客户",
+          nameUrl: "Customer"
+        }
+      ]
     });
     function goChildPage(item: childListType) {
       router.push({ name: item.nameUrl });
     }
     return {
       state,
-      goChildPage,
+      goChildPage
     };
-  },
+  }
 });
 </script>
 

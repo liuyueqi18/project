@@ -13,13 +13,13 @@ const rootState: StoreOptions<State> = {
     genderList: [
       {
         value: 1,
-        label: "男",
+        label: "男"
       },
       {
         value: 2,
-        label: "女",
-      },
-    ],
+        label: "女"
+      }
+    ]
   },
   mutations: {
     // setSearchInfo(state, genderList: Array<genderListType>) {
@@ -27,7 +27,7 @@ const rootState: StoreOptions<State> = {
     // },
   },
   actions: {},
-  modules: {},
+  modules: {}
 };
 
 const store = new Vuex.Store<State>(rootState);

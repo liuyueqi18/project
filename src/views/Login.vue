@@ -109,7 +109,7 @@ export default defineComponent({
       passwordType: "password", // 是否展示密码明文
       rightIcon: "closed-eye", // 密码右边的icon
       isLogin: true, // 是否显示登录 false则是注册
-      isShowOverlay: false, // 遮罩
+      isShowOverlay: false // 遮罩
     });
     function handlePasswordIcon() {
       state.rightIcon =
@@ -121,7 +121,6 @@ export default defineComponent({
         Toast("请输入2-10位中文名字或者邮箱");
         return;
       }
-      console.log("Boolean :>> ", Boolean(state.password));
       if (!CheckPassWord(state.password)) {
         Toast("请输入密码");
         return;
@@ -132,7 +131,7 @@ export default defineComponent({
           localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
-            name: "Homepage",
+            name: "Homepage"
           });
         })
         .catch((error: any) => {
@@ -158,7 +157,7 @@ export default defineComponent({
           localStorage.setItem("rym_user_id", user.id);
           localStorage.setItem("userInfo", JSON.stringify(user));
           router.push({
-            name: "Homepage",
+            name: "Homepage"
           });
         })
         .catch((error: any) => {
@@ -172,7 +171,7 @@ export default defineComponent({
       }
       Dialog.confirm({
         title: `重置密码`,
-        message: `是否确定向${state.username}邮箱发送重置密码`,
+        message: `是否确定向${state.username}邮箱发送重置密码`
       })
         .then(() => {
           resetPassword(state.username).then(() => {
@@ -188,9 +187,9 @@ export default defineComponent({
       handlePasswordIcon,
       handleLogin,
       handleRegister,
-      handlerReset,
+      handlerReset
     };
-  },
+  }
 });
 </script>
 

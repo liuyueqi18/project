@@ -62,7 +62,7 @@
     </div>
     <div>
       <van-popup
-        v-model:show="state.isShowSelectDialog"
+        v-model="state.isShowSelectDialog"
         position="bottom"
         style="{ max-height: 50% }"
       >
@@ -76,7 +76,7 @@
         />
       </van-popup>
       <van-popup
-        v-model:show="state.isShowDateDialog"
+        v-model="state.isShowDateDialog"
         :key="state.dateType"
         position="bottom"
         style="{ max-height: 50% }"
@@ -104,7 +104,7 @@ import {
   emailVerify,
   getUserInfoApi,
   resetPassword,
-  setUserInfoApi,
+  setUserInfoApi
 } from "@/services";
 import { CheckEmail, CheckUserName } from "@/utils";
 type State = {
@@ -145,7 +145,7 @@ export default defineComponent({
         emailVerified: true,
         birthTime: "",
         genderCode: null,
-        genderName: null,
+        genderName: null
       },
       isShowSelectDialog: false, // 是否展示弹窗
       defaultIndex: 0, // 默认下标
@@ -157,7 +157,7 @@ export default defineComponent({
       dialogDate: "", // 时间选择框默认的时间
       dateType: "default", // 选择选择的字段
       minDate: new Date("1960/01/01"),
-      genderList: store.state.genderList,
+      genderList: store.state.genderList
     });
     function getUserInfo() {
       getUserInfoApi(state.userId).then((res: any) => {
@@ -166,7 +166,7 @@ export default defineComponent({
         state.userInfo.emailVerified = res.attributes.emailVerified;
         state.userInfo.birthTime = res.attributes.birthTime;
         state.userInfo.genderCode = res.attributes.gender;
-        state.genderList.forEach((item) => {
+        state.genderList.forEach(item => {
           if (item.value === state.userInfo.genderCode) {
             state.userInfo.genderName = item.label;
           }
@@ -182,9 +182,9 @@ export default defineComponent({
         username: state.userInfo.username,
         email: state.userInfo.email,
         birthTime: state.userInfo.birthTime,
-        gender: state.userInfo.genderCode,
+        gender: state.userInfo.genderCode
       };
-      setUserInfoApi(state.userId, param).then((res) => {
+      setUserInfoApi(state.userId, param).then(res => {
         Toast("保存成功");
         getUserInfo();
       });
@@ -196,7 +196,7 @@ export default defineComponent({
       }
       Dialog.confirm({
         title: "验证邮箱",
-        message: `是否确认向${state.userInfo.email}发送邮件验证`,
+        message: `是否确认向${state.userInfo.email}发送邮件验证`
       })
         .then(() => {
           emailVerify(state.userInfo.email).then(() => {
@@ -208,12 +208,21 @@ export default defineComponent({
         });
     }
     function editPassword() {
-      resetPassword(state.userInfo.email).then(() => {
-        setTimeout(() => {
-          localStorage.clear();
-          router.push({ name: "Login" });
-        }, 2000);
-      });
+      Dialog.confirm({
+        title: "是否修改密码",
+        message: "点击后会退出登录"
+      })
+        .then(() => {
+          resetPassword(state.userInfo.email).then(() => {
+            setTimeout(() => {
+              localStorage.clear();
+              router.push({ name: "Login" });
+            }, 2000);
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
     }
     onMounted(() => {
       getUserInfo();
@@ -270,9 +279,9 @@ export default defineComponent({
       handleChooseSelectValue,
       handleOpenDateDialog,
       handleCloseDateDialog,
-      handleChooseDateValue,
+      handleChooseDateValue
     };
-  },
+  }
 });
 </script>
 

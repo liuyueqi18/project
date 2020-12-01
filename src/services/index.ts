@@ -4,7 +4,7 @@ import { Toast } from "vant";
 AV.init({
   appId: "Q8A65T5W8qkMkbWI17g7vAu0-gzGzoHsz",
   appKey: "JXUCxIYpDrIF87LVpYlK9egD",
-  serverURL: "https://server.lyq168.cn",
+  serverURL: "https://server.lyq168.cn"
 });
 
 /**
@@ -17,10 +17,10 @@ AV.init({
 export function userLogin(username: string, password: string) {
   return new Promise((resolve, reject) => {
     AV.User.logIn(username, password)
-      .then((res) => {
+      .then(res => {
         resolve(res);
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
@@ -47,10 +47,10 @@ export function userRegister(
   return new Promise((resolve, reject) => {
     user
       .signUp()
-      .then((res) => {
+      .then(res => {
         resolve(res);
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
@@ -68,10 +68,10 @@ export function getUserInfoApi(userId: string) {
   return new Promise((resolve, reject) => {
     user
       .get(userId)
-      .then((res) => {
+      .then(res => {
         resolve(res);
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
@@ -118,10 +118,10 @@ export function setUserInfoApi(userId: string, data: UserInfoType) {
 export function emailVerify(email: string) {
   return new Promise((resolve, reject) => {
     AV.User.requestEmailVerify(email)
-      .then((res) => {
+      .then(res => {
         resolve(res);
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
@@ -137,11 +137,11 @@ export function emailVerify(email: string) {
 export function resetPassword(email: string) {
   return new Promise((resolve, reject) => {
     AV.User.requestPasswordReset(email)
-      .then((res) => {
+      .then(res => {
         Toast("邮件已发送 请注意查收");
         resolve(res);
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
