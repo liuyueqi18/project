@@ -9,6 +9,13 @@
         @click="state.isShowUserDialog = false"
       >
         <div class="user_dialog" @click.stop>
+          <div
+            class="user_select"
+            v-if="route.name === 'Customer'"
+            @click="addCustomer()"
+          >
+            新增
+          </div>
           <div class="user_select" @click="goUserPage()">用户</div>
           <div class="user_select" @click="signOut()">退出</div>
         </div>
@@ -29,6 +36,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
+    console.log("route :>> ", route.name);
     const state = reactive<State>({
       userInfo: JSON.parse(localStorage.getItem("userInfo" as any) as any),
       isShowUserDialog: false
@@ -60,11 +68,15 @@ export default defineComponent({
       }
       router.push({ name: "User" });
     }
+    function addCustomer() {
+      // router.push({ name: "User" });
+    }
     return {
       state,
       showUserDialog,
       signOut,
-      goUserPage
+      goUserPage,
+      route
     };
   }
 });

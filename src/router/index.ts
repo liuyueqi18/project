@@ -36,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/customer",
     name: "Customer",
     meta: {
-      title: "Todo"
+      title: "客户列表"
     },
     component: () =>
       import(/* webpackChunkName: "customer" */ "../views/Customer.vue")

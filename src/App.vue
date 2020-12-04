@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <SignOut v-if="isShowSignOut"></SignOut>
+    <!-- <SignOut v-if="isShowSignOut"></SignOut> -->
     <router-view />
   </div>
 </template>
@@ -9,12 +9,12 @@
 type State = {};
 import { defineComponent, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
-import SignOut from "@/components/SignOut.vue";
+// import SignOut from "@/components/SignOut.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    SignOut
+    // SignOut
   },
   setup() {
     const route = useRoute();
@@ -30,4 +30,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style>
+body {
+  color: #333;
+  height: 100% !important;
+}
+</style>

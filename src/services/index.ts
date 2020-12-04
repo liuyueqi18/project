@@ -147,3 +147,76 @@ export function resetPassword(email: string) {
       });
   });
 }
+
+/**
+ * 客户列表查询
+ * @export
+ * @param {string} userId
+ * @return {*}
+ */
+export function getCustomerListById(userId: string, start: number) {
+  const Customer = new AV.Query("Customer");
+  const listPromise = new Promise((resolve, reject) => {
+    Customer.equalTo("userId", userId);
+    Customer.limit(20);
+    Customer.skip(start);
+    Customer.find()
+      .then(res => {
+        resolve(
+          res.map((item: any) => {
+            return {
+              id: item.id,
+              userId: item.attributes.userId,
+              custName: item.attributes.custName
+            };
+          })
+        );
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+  const countPromise = new Promise((resolve, reject) => {
+    Customer.equalTo("userId", userId);
+    Customer.count()
+      .then(count => {
+        resolve(count);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+  return Promise.all([listPromise, countPromise]);
+}
+
+interface CustomerInfoType {
+  userId: string;
+  custName: string;
+}
+/**
+ *
+ *
+ * @export
+ * @param {CustomerInfoType} info
+ * @return {*}
+ */
+export function setCustomer(info: CustomerInfoType) {
+  return new Promise((resolve, reject) => {
+    const Customer = AV.Object.extend("Customer");
+    const customer = new Customer();
+    for (const i in info) {
+      customer.set(i, info[i as keyof CustomerInfoType]);
+    }
+    customer
+      .save()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
