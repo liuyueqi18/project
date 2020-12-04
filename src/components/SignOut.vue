@@ -1,6 +1,12 @@
 <template>
   <div class="sign_out">
-    <div class="sign_button" @click="showUserDialog">
+    <div
+      class="sign_button"
+      @click="showUserDialog"
+      :style="{
+        'box-shadow': state.isShowUserDialog ? '' : '2px 0px 10px 1px #325888'
+      }"
+    >
       <van-icon name="user-circle-o" class="sign_icon" />
     </div>
     <transition name="van-slide-down">
@@ -69,14 +75,16 @@ export default defineComponent({
       router.push({ name: "User" });
     }
     function addCustomer() {
-      // router.push({ name: "User" });
+      state.isShowUserDialog = false;
+      router.push({ name: "CustomerInfoPage" });
     }
     return {
       state,
       showUserDialog,
       signOut,
       goUserPage,
-      route
+      route,
+      addCustomer
     };
   }
 });
@@ -91,11 +99,11 @@ export default defineComponent({
     border-radius: 50%;
     text-align: center;
     line-height: 50px;
-    color: #fff;
+    color: #f3f6fc;
     display: flex;
     bottom: 30px;
     right: 30px;
-    background: #1989fa;
+    background: #325888;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,6 +111,7 @@ export default defineComponent({
     position: fixed;
     bottom: 30px;
     right: 30px;
+    z-index: 9999;
   }
   & .user_dialog {
     position: fixed;
@@ -112,10 +121,10 @@ export default defineComponent({
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      background: #1989fa;
+      background: #325888;
       line-height: 60px;
       text-align: center;
-      color: #fff;
+      color: #f3f6fc;
       margin-top: 10px;
     }
   }
