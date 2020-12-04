@@ -15,17 +15,17 @@
             </div>
             <div class="right" @click="followCust(item)">
               <van-icon
-                :name="item.focus == 1 ? 'star' : 'star-o'"
+                :name="item.isFollow == 1 ? 'star' : 'star-o'"
                 class="cust_star"
                 :style="{
-                  color: item.focus == 1 ? '#8D939E' : '#4E80EF'
+                  color: item.isFollow == 1 ? '#8D939E' : '#4E80EF'
                 }"
               />
               <span
                 :style="{
-                  color: item.focus == 1 ? '#8D939E' : '#4E80EF'
+                  color: item.isFollow == 1 ? '#8D939E' : '#4E80EF'
                 }"
-                >{{ item.focus == 1 ? "取消关注" : "关注" }}</span
+                >{{ item.isFollow == 1 ? "取消关注" : "关注" }}</span
               >
             </div>
           </div>
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { getCustomerListById, setCustomer } from "@/services";
+import { followCustomer, getCustomerListById, setCustomer } from "@/services";
 import { defineComponent, onMounted, reactive } from "vue";
 type Props = {
   //
@@ -94,6 +94,7 @@ export default defineComponent({
           }
           state.loading = false;
           state.custList = state.custList.concat(res[0]);
+          console.log("res[0] :>> ", res[0]);
           state.custCount = res[1];
           if (state.custList.length >= state.custCount) {
             state.finished = true;
@@ -107,8 +108,10 @@ export default defineComponent({
       state.custList = [];
       onLoad();
     }
-    function followCust(item: any, i: number) {
-      item.focus = !item.focus;
+    function followCust(item: any) {
+      followCustomer(item.id, !item.isFollow).then(res => {
+        item.isFollow = !item.isFollow;
+      });
     }
     return {
       state,

@@ -167,7 +167,8 @@ export function getCustomerListById(userId: string, start: number) {
             return {
               id: item.id,
               userId: item.attributes.userId,
-              custName: item.attributes.custName
+              custName: item.attributes.custName,
+              isFollow: item.attributes.isFollow
             };
           })
         );
@@ -191,17 +192,16 @@ export function getCustomerListById(userId: string, start: number) {
   return Promise.all([listPromise, countPromise]);
 }
 
-interface CustomerInfoType {
-  userId: string;
-  custName: string;
-}
 /**
- *
- *
+ * 新增客户
  * @export
  * @param {CustomerInfoType} info
  * @return {*}
  */
+interface CustomerInfoType {
+  userId: string;
+  custName: string;
+}
 export function setCustomer(info: CustomerInfoType) {
   return new Promise((resolve, reject) => {
     const Customer = AV.Object.extend("Customer");
@@ -209,6 +209,29 @@ export function setCustomer(info: CustomerInfoType) {
     for (const i in info) {
       customer.set(i, info[i as keyof CustomerInfoType]);
     }
+    customer
+      .save()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
+
+/**
+ * 关注/取关
+ * @export
+ * @param {string} custId
+ * @param {boolean} isFollow
+ * @return {*}
+ */
+export function followCustomer(custId: string, isFollow: boolean) {
+  return new Promise((resolve, reject) => {
+    const customer = AV.Object.createWithoutData("Customer", custId);
+    customer.set("isFollow", isFollow);
     customer
       .save()
       .then(res => {
