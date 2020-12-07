@@ -13,20 +13,26 @@
               <div class="name">{{ item.custName }}</div>
               <div class="phone">{{ item.phone }}</div>
             </div>
-            <div class="right" @click="followCust(item)">
+            <div class="right">
               <van-icon
-                :name="item.isFollow == 1 ? 'star' : 'star-o'"
+                :name="item.isFollow ? 'star' : 'star-o'"
                 class="cust_star"
                 :style="{
-                  color: item.isFollow == 1 ? '#8D939E' : '#4E80EF'
+                  color: item.isFollow ? '#8D939E' : '#4E80EF'
                 }"
+                @click="followCust(item)"
               />
-              <span
-                :style="{
-                  color: item.isFollow == 1 ? '#8D939E' : '#4E80EF'
-                }"
-                >{{ item.isFollow == 1 ? "取消关注" : "关注" }}</span
+              <van-popover
+                v-model:show="item.showPopover"
+                :actions="item.actions"
+                @select="(e, ei) => onSelect(e, ei, item, i)"
+                theme="dark"
+                placement="left-start"
               >
+                <template #reference>
+                  <van-icon name="setting-o" />
+                </template>
+              </van-popover>
             </div>
           </div>
           <div class="content">
@@ -53,15 +59,16 @@
 </template>
 
 <script lang="ts">
-import { followCustomer, getCustomerListById, setCustomer } from "@/services";
-import { defineComponent, onMounted, reactive } from "vue";
+import { delCustomer, followCustomer, getCustomerListById } from "@/services";
+import { Dialog } from "vant";
+import { defineComponent, reactive, ref } from "vue";
+import { CustomerBO } from "./types";
 type Props = {
   //
 };
 type State = {
   userId: string;
-  list: Array<unknown>;
-  custList: Array<unknown>;
+  custList: Array<CustomerBO>;
   custCount: number;
   loading: boolean;
   finished: boolean;
@@ -74,7 +81,6 @@ export default defineComponent({
   setup() {
     const state = reactive<State>({
       userId: localStorage.getItem("rym_user_id") as string,
-      list: [{}],
       custList: [],
       custCount: 0,
       loading: false,
@@ -82,25 +88,32 @@ export default defineComponent({
       refreshing: false
     });
     function onLoad() {
-      getCustomerListById(state.userId, state.custList.length).then(
-        (res: any) => {
-          if (res[0].length === 0) {
-            state.finished = true;
-            return;
-          }
-          if (state.refreshing) {
-            state.custList = [];
-            state.refreshing = false;
-          }
-          state.loading = false;
-          state.custList = state.custList.concat(res[0]);
-          console.log("res[0] :>> ", res[0]);
-          state.custCount = res[1];
-          if (state.custList.length >= state.custCount) {
-            state.finished = true;
-          }
+      getCustomerListById(state.userId, state.custList.length).then(res => {
+        if (res[0].length === 0) {
+          state.finished = true;
+          return;
         }
-      );
+        if (state.refreshing) {
+          state.custList = [];
+          state.refreshing = false;
+        }
+        state.loading = false;
+        state.custList = state.custList.concat(res[0]);
+        state.custList = state.custList.map(item => {
+          return {
+            ...item,
+            actions: [
+              { text: item.custName, disabled: true },
+              { text: "编辑", key: "edit" },
+              { text: "删除", key: "del", className: "delete_popover" }
+            ]
+          };
+        });
+        state.custCount = res[1];
+        if (state.custList.length >= state.custCount) {
+          state.finished = true;
+        }
+      });
     }
     function onRefresh() {
       state.finished = false;
@@ -108,16 +121,40 @@ export default defineComponent({
       state.custList = [];
       onLoad();
     }
-    function followCust(item: any) {
-      followCustomer(item.id, !item.isFollow).then(res => {
+    function followCust(item: CustomerBO) {
+      followCustomer(item.id, !item.isFollow).then(() => {
         item.isFollow = !item.isFollow;
       });
+    }
+    function onSelect(
+      e: { key: string },
+      ei: number,
+      item: CustomerBO,
+      i: number
+    ) {
+      if (e.key === "edit") {
+        //
+      } else if (e.key === "del") {
+        Dialog.confirm({
+          title: "删除",
+          message: "是否删除"
+        })
+          .then(() => {
+            delCustomer(item.id).then(() => {
+              state.custList.splice(i, 1);
+            });
+          })
+          .catch(() => {
+            //
+          });
+      }
     }
     return {
       state,
       onLoad,
       onRefresh,
-      followCust
+      followCust,
+      onSelect
     };
   }
 });
@@ -152,11 +189,15 @@ export default defineComponent({
         }
       }
       & .right {
-        font-size: 14px;
+        font-size: 17px;
         display: flex;
+        height: 16px;
         align-items: center;
-        & span {
-          margin-left: 4px;
+        & .cust_star {
+          margin-right: 5px;
+        }
+        & >>> .van-popover__wrapper {
+          height: 15px;
         }
       }
     }
@@ -164,7 +205,7 @@ export default defineComponent({
       & .info {
         display: flex;
         font-size: 14px;
-        align-items: start;
+        align-items: flex-start;
         margin-bottom: 1px;
         & p {
           color: #4d5464;
@@ -176,5 +217,10 @@ export default defineComponent({
       }
     }
   }
+}
+</style>
+<style>
+.delete_popover {
+  color: #ee0a24;
 }
 </style>

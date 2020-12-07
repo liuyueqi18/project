@@ -7,6 +7,8 @@ AV.init({
   serverURL: "https://server.lyq168.cn"
 });
 
+import { CustomerBO } from "@/views/types";
+
 /**
  * 登录
  * @export
@@ -154,31 +156,34 @@ export function resetPassword(email: string) {
  * @param {string} userId
  * @return {*}
  */
-export function getCustomerListById(userId: string, start: number) {
+
+export function getCustomerListById(
+  userId: string,
+  start: number
+): Promise<[CustomerBO[], number]> {
   const Customer = new AV.Query("Customer");
-  const listPromise = new Promise((resolve, reject) => {
+  const listPromise = new Promise<CustomerBO[]>((resolve, reject) => {
     Customer.equalTo("userId", userId);
     Customer.limit(20);
     Customer.skip(start);
     Customer.find()
       .then(res => {
-        resolve(
-          res.map((item: any) => {
-            return {
-              id: item.id,
-              userId: item.attributes.userId,
-              custName: item.attributes.custName,
-              isFollow: item.attributes.isFollow
-            };
-          })
-        );
+        const list = res.map(item => {
+          return {
+            id: item.id as string,
+            userId: item.get("userId"),
+            custName: item.get("custName"),
+            isFollow: item.get("isFollow")
+          };
+        });
+        resolve(list);
       })
       .catch(error => {
         reject(error);
         Toast(error.rawMessage);
       });
   });
-  const countPromise = new Promise((resolve, reject) => {
+  const countPromise = new Promise<number>((resolve, reject) => {
     Customer.equalTo("userId", userId);
     Customer.count()
       .then(count => {
@@ -211,6 +216,21 @@ export function setCustomer(info: CustomerInfoType) {
     }
     customer
       .save()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
+
+export function delCustomer(userId: string) {
+  return new Promise((resolve, reject) => {
+    const customer = AV.Object.createWithoutData("Customer", userId);
+    customer
+      .destroy()
       .then(res => {
         resolve(res);
       })
