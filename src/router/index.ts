@@ -7,7 +7,7 @@ import {
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "",
+    path: "/",
     name: "",
     meta: {
       title: "主页"

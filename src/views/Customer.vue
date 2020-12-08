@@ -37,13 +37,9 @@
           </div>
           <div class="content">
             <div class="info">
-              <p>性别:</p>
-              <span>{{ item.gender }}</span>
-            </div>
-            <div class="info">
               <p>地址:</p>
               <span
-                >{{ item.province }}{{ item.city }}{{ item.area
+                >{{ item.provinceName }}{{ item.cityName }}{{ item.areaName
                 }}{{ item.address }}</span
               >
             </div>
@@ -62,6 +58,7 @@
 import { delCustomer, followCustomer, getCustomerListById } from "@/services";
 import { Dialog } from "vant";
 import { defineComponent, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import { CustomerBO } from "./types";
 type Props = {
   //
@@ -79,6 +76,7 @@ export default defineComponent({
   name: "Login",
   props: {},
   setup() {
+    const router = useRouter();
     const state = reactive<State>({
       userId: localStorage.getItem("rym_user_id") as string,
       custList: [],
@@ -104,7 +102,7 @@ export default defineComponent({
             ...item,
             actions: [
               { text: item.custName, disabled: true },
-              { text: "编辑", key: "edit" },
+              // { text: "编辑", key: "edit" },
               { text: "删除", key: "del", className: "delete_popover" }
             ]
           };
@@ -133,7 +131,13 @@ export default defineComponent({
       i: number
     ) {
       if (e.key === "edit") {
-        //
+        router.push({
+          name: "CustomerInfoPage",
+          query: {
+            type: "edit",
+            id: item.id
+          }
+        });
       } else if (e.key === "del") {
         Dialog.confirm({
           title: "删除",

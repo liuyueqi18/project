@@ -23,7 +23,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/utils/area.ts"
+    "src/utils/area.js"
   ],
   "exclude": ["node_modules"]
 }

@@ -31,23 +31,22 @@
 </template>
 
 <script lang="ts">
-type State = {
-  userInfo: any;
-  isShowUserDialog: boolean;
-};
 import { defineComponent, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Dialog, Toast } from "vant";
+
+type State = {
+  isShowUserDialog: boolean;
+};
+
 export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
-    console.log("route :>> ", route.name);
+
     const state = reactive<State>({
-      userInfo: JSON.parse(localStorage.getItem("userInfo" as any) as any),
       isShowUserDialog: false
     });
-
     function showUserDialog() {
       state.isShowUserDialog = true;
     }
@@ -76,7 +75,12 @@ export default defineComponent({
     }
     function addCustomer() {
       state.isShowUserDialog = false;
-      router.push({ name: "CustomerInfoPage" });
+      router.push({
+        name: "CustomerInfoPage",
+        query: {
+          type: "add"
+        }
+      });
     }
     return {
       state,

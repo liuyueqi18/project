@@ -6,9 +6,8 @@
 </template>
 
 <script lang="ts">
-type State = {};
-import { defineComponent, reactive, computed } from "vue";
-import { useRoute } from "vue-router";
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import SignOut from "@/components/SignOut.vue";
 
 export default defineComponent({
@@ -17,13 +16,21 @@ export default defineComponent({
     SignOut
   },
   setup() {
-    const route = useRoute();
-    const state = reactive<State>({});
-    const isShowSignOut = computed(() => {
-      return route.name !== "Login";
+    const router = useRouter();
+
+    const showSignList = ["", "Homepage", "Customer"];
+    const isShowSignOut = ref(false);
+
+    router.beforeEach((to, from, next) => {
+      if (showSignList.indexOf(to.name as string) > -1) {
+        isShowSignOut.value = true;
+      } else {
+        isShowSignOut.value = false;
+      }
+      next();
     });
+
     return {
-      state,
       isShowSignOut
     };
   }

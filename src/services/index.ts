@@ -7,7 +7,7 @@ AV.init({
   serverURL: "https://server.lyq168.cn"
 });
 
-import { CustomerBO } from "@/views/types";
+import { CustomerBO, CustomerVO } from "@/views/types";
 
 /**
  * 登录
@@ -166,6 +166,8 @@ export function getCustomerListById(
     Customer.equalTo("userId", userId);
     Customer.limit(20);
     Customer.skip(start);
+    Customer.descending("isFollow");
+    Customer.descending("updatedAt");
     Customer.find()
       .then(res => {
         const list = res.map(item => {
@@ -173,7 +175,10 @@ export function getCustomerListById(
             id: item.id as string,
             userId: item.get("userId"),
             custName: item.get("custName"),
-            isFollow: item.get("isFollow")
+            isFollow: item.get("isFollow"),
+            provinceName: item.get("provinceName"),
+            cityName: item.get("cityName"),
+            areaName: item.get("areaName")
           };
         });
         resolve(list);
@@ -197,22 +202,12 @@ export function getCustomerListById(
   return Promise.all([listPromise, countPromise]);
 }
 
-/**
- * 新增客户
- * @export
- * @param {CustomerInfoType} info
- * @return {*}
- */
-interface CustomerInfoType {
-  userId: string;
-  custName: string;
-}
-export function setCustomer(info: CustomerInfoType) {
+export function setCustomer(info: CustomerVO) {
   return new Promise((resolve, reject) => {
     const Customer = AV.Object.extend("Customer");
     const customer = new Customer();
     for (const i in info) {
-      customer.set(i, info[i as keyof CustomerInfoType]);
+      customer.set(i, info[i as keyof CustomerVO]);
     }
     customer
       .save()
