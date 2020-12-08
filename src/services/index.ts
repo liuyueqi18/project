@@ -202,6 +202,12 @@ export function getCustomerListById(
   return Promise.all([listPromise, countPromise]);
 }
 
+/**
+ * 新增客户
+ * @export
+ * @param {CustomerVO} info
+ * @return {*}
+ */
 export function setCustomer(info: CustomerVO) {
   return new Promise((resolve, reject) => {
     const Customer = AV.Object.extend("Customer");
@@ -221,11 +227,73 @@ export function setCustomer(info: CustomerVO) {
   });
 }
 
+/**
+ * 删除客户
+ * @export
+ * @param {string} userId
+ * @return {*}
+ */
 export function delCustomer(userId: string) {
   return new Promise((resolve, reject) => {
     const customer = AV.Object.createWithoutData("Customer", userId);
     customer
       .destroy()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
+
+/**
+ * 获取客户详情
+ * @export
+ * @param {string} id
+ * @return {*}
+ */
+export function getCustomerInfoById(id: string) {
+  return new Promise<CustomerVO>((resolve, reject) => {
+    const customerInfo = new AV.Query("Customer");
+    customerInfo
+      .get(id)
+      .then(res => {
+        console.log("getCustomerInfoById :>> ", res);
+        resolve({
+          userId: res.get("userId"),
+          custName: res.get("custName"),
+          provinceName: res.get("provinceName"),
+          provinceCode: res.get("provinceCode"),
+          cityName: res.get("cityName"),
+          cityCode: res.get("cityCode"),
+          areaName: res.get("areaName"),
+          areaCode: res.get("areaCode")
+        });
+        // resolve(res as CustomerVO);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
+  });
+}
+
+/**
+ * 保存
+ * @export
+ * @param {string} id
+ * @param {CustomerVO} info
+ * @return {*}
+ */
+export function editCustomer(id: string, info: CustomerVO) {
+  return new Promise((resolve, reject) => {
+    const CustomerInfo = AV.Object.createWithoutData("Customer", id);
+    for (const i in info) {
+      CustomerInfo.set(i, info[i as keyof CustomerVO]);
+    }
+    CustomerInfo.save()
       .then(res => {
         resolve(res);
       })

@@ -28,18 +28,23 @@
       <van-button type="primary" block @click="submit">保 存</van-button>
     </div>
     <van-popup v-model:show="isShowAreaDialog" position="bottom">
-      <van-area title="地址" :area-list="areaList" @confirm="handlerArea" />
+      <van-area
+        title="地址"
+        :area-list="areaList"
+        @confirm="handlerArea"
+        :value="(custInfo.provinceCode, custInfo.cityCode, custInfo.areaCode)"
+      />
     </van-popup>
   </div>
 </template>
 
 <script lang="ts">
 type State = {};
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onUnmounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import area from "@/utils/area.js";
 import { CustomerVO, UserInfoBO } from "./types";
-import { setCustomer } from "@/services";
+import { editCustomer, getCustomerInfoById, setCustomer } from "@/services";
 import router from "@/router";
 import { Toast } from "vant";
 
@@ -66,10 +71,24 @@ export default defineComponent({
     const isShowAreaDialog = ref(false);
     const route = useRoute();
 
+    function getCustomerInfo() {
+      getCustomerInfoById(route.query.id as string).then((res: CustomerVO) => {
+        custInfo.userId = res.userId;
+        custInfo.custName = res.custName;
+        custInfo.provinceName = res.provinceName;
+        custInfo.provinceCode = res.provinceCode;
+        custInfo.cityName = res.cityName;
+        custInfo.cityCode = res.cityCode;
+        custInfo.areaName = res.areaName;
+        custInfo.areaCode = res.areaCode;
+      });
+    }
+
     if (route.query.type === "add") {
       document.title = "新增客户";
     } else if (route.query.type === "edit") {
       document.title = "编辑客户";
+      getCustomerInfo();
     }
 
     function openAddress() {
@@ -95,9 +114,15 @@ export default defineComponent({
           }, 500);
         });
       } else if (route.query.type === "edit") {
-        //
+        editCustomer(route.query.id as string, custInfo).then(() => {
+          setTimeout(() => {
+            Toast("成功");
+            router.go(-1);
+          }, 500);
+        });
       }
     }
+
     return {
       state,
       custInfo,

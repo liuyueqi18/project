@@ -102,7 +102,7 @@ export default defineComponent({
             ...item,
             actions: [
               { text: item.custName, disabled: true },
-              // { text: "编辑", key: "edit" },
+              { text: "编辑", key: "edit" },
               { text: "删除", key: "del", className: "delete_popover" }
             ]
           };
@@ -119,11 +119,13 @@ export default defineComponent({
       state.custList = [];
       onLoad();
     }
+
     function followCust(item: CustomerBO) {
       followCustomer(item.id, !item.isFollow).then(() => {
         item.isFollow = !item.isFollow;
       });
     }
+
     function onSelect(
       e: { key: string },
       ei: number,
