@@ -11,6 +11,7 @@ module.exports = {
             })
     },
     devServer: {
+        // disableHostCheck: true,//webpack4.0 开启热更新
         proxy: {
             "/*": {
                 target: "https://map.dev.lyq168.com",
