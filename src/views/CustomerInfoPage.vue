@@ -23,6 +23,14 @@
           >
         </template></van-field
       >
+      <van-field name="radio" label="性别" input-align="right">
+        <template #input>
+          <van-radio-group v-model="custInfo.gender" direction="horizontal">
+            <van-radio name="1">男</van-radio>
+            <van-radio name="2">女</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
       <van-field
         v-model="custInfo.remark"
         label="备注"
@@ -50,7 +58,7 @@
 
 <script lang="ts">
 type State = {};
-import { defineComponent, onUnmounted, reactive, ref } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import area from "@/utils/area.js";
 import { CustomerVO, UserInfoBO } from "./types";
@@ -71,7 +79,8 @@ export default defineComponent({
       cityCode: "",
       areaName: "",
       areaCode: "",
-      remark: ""
+      remark: "",
+      gender: "1"
     });
     const userInfo = JSON.parse(
       localStorage.getItem("userInfo") as string
@@ -93,6 +102,7 @@ export default defineComponent({
         custInfo.areaName = res.areaName;
         custInfo.areaCode = res.areaCode;
         custInfo.remark = res.remark;
+        custInfo.gender = res.gender;
       });
     }
 

@@ -33,6 +33,7 @@ export type CustomerVO = {
   areaName: string;
   areaCode: string;
   remark: string;
+  gender: string;
 };
 
 type MyFile<T> = Omit<AV.File, "get"> & {

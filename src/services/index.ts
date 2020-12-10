@@ -271,7 +271,8 @@ export function getCustomerInfoById(id: string) {
           cityCode: res.get("cityCode"),
           areaName: res.get("areaName"),
           areaCode: res.get("areaCode"),
-          remark: res.get("remark")
+          remark: res.get("remark"),
+          gender: res.get("gender")
         });
         // resolve(res as CustomerVO);
       })
