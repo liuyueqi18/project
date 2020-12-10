@@ -20,6 +20,7 @@ export type CustomerBO = {
   provinceName: string;
   cityName: string;
   areaName: string;
+  remark: string;
 };
 
 export type CustomerVO = {
@@ -31,6 +32,7 @@ export type CustomerVO = {
   cityCode: string;
   areaName: string;
   areaCode: string;
+  remark: string;
 };
 
 type MyFile<T> = Omit<AV.File, "get"> & {

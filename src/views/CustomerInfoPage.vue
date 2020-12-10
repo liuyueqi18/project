@@ -23,6 +23,16 @@
           >
         </template></van-field
       >
+      <van-field
+        v-model="custInfo.remark"
+        label="备注"
+        rows="2"
+        autosize
+        type="textarea"
+        input-align="right"
+        placeholder="请输入备注"
+        show-word-limit
+      />
     </van-cell-group>
     <div class="submit_btn">
       <van-button type="primary" block @click="submit">保 存</van-button>
@@ -60,7 +70,8 @@ export default defineComponent({
       cityName: "",
       cityCode: "",
       areaName: "",
-      areaCode: ""
+      areaCode: "",
+      remark: ""
     });
     const userInfo = JSON.parse(
       localStorage.getItem("userInfo") as string
@@ -81,6 +92,7 @@ export default defineComponent({
         custInfo.cityCode = res.cityCode;
         custInfo.areaName = res.areaName;
         custInfo.areaCode = res.areaCode;
+        custInfo.remark = res.remark;
       });
     }
 

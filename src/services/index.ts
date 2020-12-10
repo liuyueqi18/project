@@ -166,8 +166,8 @@ export function getCustomerListById(
     Customer.equalTo("userId", userId);
     Customer.limit(20);
     Customer.skip(start);
-    Customer.descending("isFollow");
     Customer.descending("updatedAt");
+    Customer.descending("isFollow");
     Customer.find()
       .then(res => {
         const list = res.map(item => {
@@ -178,7 +178,8 @@ export function getCustomerListById(
             isFollow: item.get("isFollow"),
             provinceName: item.get("provinceName"),
             cityName: item.get("cityName"),
-            areaName: item.get("areaName")
+            areaName: item.get("areaName"),
+            remark: item.get("remark")
           };
         });
         resolve(list);
@@ -269,7 +270,8 @@ export function getCustomerInfoById(id: string) {
           cityName: res.get("cityName"),
           cityCode: res.get("cityCode"),
           areaName: res.get("areaName"),
-          areaCode: res.get("areaCode")
+          areaCode: res.get("areaCode"),
+          remark: res.get("remark")
         });
         // resolve(res as CustomerVO);
       })
