@@ -21,6 +21,7 @@ export type CustomerBO = {
   cityName: string;
   areaName: string;
   remark: string;
+  gender: string;
 };
 
 export type CustomerVO = {

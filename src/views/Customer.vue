@@ -12,13 +12,21 @@
             <div class="left">
               <div class="name">{{ item.custName }}</div>
               <div class="phone">{{ item.phone }}</div>
+              <div v-if="item.gender">
+                <svg class="icon" aria-hidden="true" v-if="item.gender === '1'">
+                  <use style="color:#4E80EF" xlink:href="#icon-nv"></use>
+                </svg>
+                <svg class="icon" aria-hidden="true" v-if="item.gender === '2'">
+                  <use style="color:#4E80EF" xlink:href="#icon-nan"></use>
+                </svg>
+              </div>
             </div>
             <div class="right">
               <van-icon
                 :name="item.isFollow ? 'star' : 'star-o'"
                 class="cust_star"
                 :style="{
-                  color: item.isFollow ? '#8D939E' : '#4E80EF'
+                  color: item.isFollow ? '#4E80EF' : '#8D939E'
                 }"
                 @click="followCust(item)"
               />
@@ -30,7 +38,7 @@
                 placement="left-start"
               >
                 <template #reference>
-                  <van-icon name="setting-o" />
+                  <van-icon name="setting-o" style="color:#4E80EF" />
                 </template>
               </van-popover>
             </div>

@@ -179,7 +179,8 @@ export function getCustomerListById(
             provinceName: item.get("provinceName"),
             cityName: item.get("cityName"),
             areaName: item.get("areaName"),
-            remark: item.get("remark")
+            remark: item.get("remark"),
+            gender: item.get("gender")
           };
         });
         resolve(list);

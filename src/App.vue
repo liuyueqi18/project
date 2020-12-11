@@ -43,3 +43,15 @@ body {
   height: 100% !important;
 }
 </style>
+<style type="text/css">
+.icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  display: block;
+  fill: currentColor;
+  /* 继承颜色 */
+  overflow: hidden;
+  color: #333;
+}
+</style>
