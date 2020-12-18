@@ -176,19 +176,22 @@ export function getCustomerListById(
   const globalQueryV3 = new AV.Query("Customer");
   const globalQueryV4 = new AV.Query("Customer");
   const globalQueryV5 = new AV.Query("Customer");
+  const globalQueryV6 = new AV.Query("Customer");
   if (CustomerQueryVO.globalValue) {
     globalQueryV1.contains("custName", CustomerQueryVO.globalValue);
     globalQueryV2.contains("provinceName", CustomerQueryVO.globalValue);
     globalQueryV3.contains("cityName", CustomerQueryVO.globalValue);
     globalQueryV4.contains("areaName", CustomerQueryVO.globalValue);
     globalQueryV5.contains("remark", CustomerQueryVO.globalValue);
+    globalQueryV6.contains("custPhone", CustomerQueryVO.globalValue);
   }
   const globalQuery = AV.Query.or(
     globalQueryV1,
     globalQueryV2,
     globalQueryV3,
     globalQueryV4,
-    globalQueryV5
+    globalQueryV5,
+    globalQueryV6
   );
   const Query = AV.Query.and(CustomerUserVO, globalQuery);
   Query.limit(10);
@@ -203,6 +206,7 @@ export function getCustomerListById(
             id: item.id as string,
             userId: item.get("userId"),
             custName: item.get("custName"),
+            custPhone: item.get("custPhone"),
             isFollow: item.get("isFollow"),
             provinceName: item.get("provinceName"),
             cityName: item.get("cityName"),
@@ -292,6 +296,7 @@ export function getCustomerInfoById(id: string) {
         console.log("getCustomerInfoById :>> ", res);
         resolve({
           userId: res.get("userId"),
+          custPhone: res.get("custPhone"),
           custName: res.get("custName"),
           provinceName: res.get("provinceName"),
           provinceCode: res.get("provinceCode"),

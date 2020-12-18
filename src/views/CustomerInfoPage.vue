@@ -10,6 +10,14 @@
         required
       />
       <van-field
+        v-model="custInfo.custPhone"
+        label="电话"
+        input-align="right"
+        placeholder="请输入电话"
+        clearable
+        required
+      />
+      <van-field
         @click="openAddress()"
         readonly
         label="地址"
@@ -72,6 +80,7 @@ export default defineComponent({
     const state = reactive<State>({});
     const custInfo = reactive<CustomerVO>({
       userId: "",
+      custPhone: "",
       custName: "",
       provinceName: "",
       provinceCode: "",
@@ -95,6 +104,7 @@ export default defineComponent({
       getCustomerInfoById(route.query.id as string).then((res: CustomerVO) => {
         custInfo.userId = res.userId;
         custInfo.custName = res.custName;
+        custInfo.custPhone = res.custPhone;
         custInfo.provinceName = res.provinceName;
         custInfo.provinceCode = res.provinceCode;
         custInfo.cityName = res.cityName;

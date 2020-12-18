@@ -64,6 +64,10 @@
           </div>
           <div class="content">
             <div class="info">
+              <p>电话:</p>
+              <span>{{ item.custPhone }}</span>
+            </div>
+            <div class="info">
               <p>地址:</p>
               <span
                 >{{ item.provinceName }}{{ item.cityName }}{{ item.areaName

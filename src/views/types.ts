@@ -15,6 +15,7 @@ export type UserInfoBO = {
 export type CustomerBO = {
   id: string;
   userId: string;
+  custPhone: string;
   custName: string;
   isFollow: boolean;
   provinceName: string;
@@ -26,6 +27,7 @@ export type CustomerBO = {
 
 export type CustomerVO = {
   userId: string;
+  custPhone: string;
   custName: string;
   provinceName: string;
   provinceCode: string;
