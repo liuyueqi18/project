@@ -1,5 +1,24 @@
 <template>
   <div class="customer">
+    <van-sticky>
+      <div>
+        <form action="/">
+          <van-search
+            v-model="searchValue"
+            @search="globalSearch"
+            show-action
+            placeholder="请输入搜索关键词"
+          >
+            <template #action>
+              <div class="search-right">
+                <div @click="globalSearch">搜索</div>
+                <!-- <div>筛选</div> -->
+              </div>
+            </template></van-search
+          >
+        </form>
+      </div>
+    </van-sticky>
     <van-pull-refresh v-model="state.refreshing" @refresh="onRefresh">
       <van-list
         v-model:loading="state.loading"
@@ -93,8 +112,12 @@ export default defineComponent({
       finished: false,
       refreshing: false
     });
+    const searchValue = ref("");
+
     function onLoad() {
-      getCustomerListById(state.userId, state.custList.length).then(res => {
+      getCustomerListById(state.userId, state.custList.length, {
+        globalValue: searchValue.value
+      }).then(res => {
         if (res[0].length === 0) {
           state.finished = true;
           return;
@@ -127,13 +150,11 @@ export default defineComponent({
       state.custList = [];
       onLoad();
     }
-
     function followCust(item: CustomerBO) {
       followCustomer(item.id, !item.isFollow).then(() => {
         item.isFollow = !item.isFollow;
       });
     }
-
     function onSelect(
       e: { key: string },
       ei: number,
@@ -163,12 +184,19 @@ export default defineComponent({
           });
       }
     }
+
+    function globalSearch() {
+      onRefresh();
+    }
+
     return {
       state,
       onLoad,
       onRefresh,
       followCust,
-      onSelect
+      onSelect,
+      searchValue,
+      globalSearch
     };
   }
 });
@@ -178,6 +206,14 @@ export default defineComponent({
 .customer {
   min-height: 100vh;
   background: #f3f6fc;
+  & .search-right {
+    display: flex;
+    align-items: center;
+    color: #4e80ef;
+    & div {
+      margin-left: 5px;
+    }
+  }
   & .cust_info {
     margin: 8px;
     padding: 10px 16px;

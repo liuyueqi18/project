@@ -154,21 +154,49 @@ export function resetPassword(email: string) {
  * 客户列表查询
  * @export
  * @param {string} userId
- * @return {*}
+ * @param {number} start
+ * @param {{
+ *     globalValue: string;
+ *   }} CustomerQueryVO
+ * @return {*}  {Promise<[CustomerBO[], number]>}
  */
-
 export function getCustomerListById(
   userId: string,
-  start: number
+  start: number,
+  CustomerQueryVO: {
+    globalValue: string;
+  }
 ): Promise<[CustomerBO[], number]> {
-  const Customer = new AV.Query("Customer");
+  // 只查看自己的客户
+  const CustomerUserVO = new AV.Query("Customer");
+  CustomerUserVO.equalTo("userId", userId);
+  // 全局查询条件
+  const globalQueryV1 = new AV.Query("Customer");
+  const globalQueryV2 = new AV.Query("Customer");
+  const globalQueryV3 = new AV.Query("Customer");
+  const globalQueryV4 = new AV.Query("Customer");
+  const globalQueryV5 = new AV.Query("Customer");
+  if (CustomerQueryVO.globalValue) {
+    globalQueryV1.contains("custName", CustomerQueryVO.globalValue);
+    globalQueryV2.contains("provinceName", CustomerQueryVO.globalValue);
+    globalQueryV3.contains("cityName", CustomerQueryVO.globalValue);
+    globalQueryV4.contains("areaName", CustomerQueryVO.globalValue);
+    globalQueryV5.contains("remark", CustomerQueryVO.globalValue);
+  }
+  const globalQuery = AV.Query.or(
+    globalQueryV1,
+    globalQueryV2,
+    globalQueryV3,
+    globalQueryV4,
+    globalQueryV5
+  );
+  const Query = AV.Query.and(CustomerUserVO, globalQuery);
+  Query.limit(10);
+  Query.skip(start);
+  Query.descending("isFollow");
+  Query.addDescending("updatedAt");
   const listPromise = new Promise<CustomerBO[]>((resolve, reject) => {
-    Customer.equalTo("userId", userId);
-    Customer.limit(20);
-    Customer.skip(start);
-    Customer.descending("updatedAt");
-    Customer.descending("isFollow");
-    Customer.find()
+    Query.find()
       .then(res => {
         const list = res.map(item => {
           return {
@@ -191,8 +219,7 @@ export function getCustomerListById(
       });
   });
   const countPromise = new Promise<number>((resolve, reject) => {
-    Customer.equalTo("userId", userId);
-    Customer.count()
+    Query.count()
       .then(count => {
         resolve(count);
       })
