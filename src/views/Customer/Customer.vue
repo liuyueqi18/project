@@ -87,6 +87,10 @@
       position="right"
       :style="{ width: '70%', height: '100%' }"
     >
+      <SearchModel
+        @closeSearch="closeSearch"
+        @submitSearch="submitSearch"
+      ></SearchModel>
     </van-popup>
   </div>
 </template>
@@ -96,7 +100,8 @@ import { delCustomer, followCustomer, getCustomerListById } from "@/services";
 import { Dialog } from "vant";
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { CustomerBO } from "../types";
+import { CustomerBO, CustomerQueryVO } from "@/views/Customer/types";
+import SearchModel from "@/components/Customer/Search.vue";
 type Props = {
   //
 };
@@ -112,6 +117,9 @@ type State = {
 export default defineComponent({
   name: "Login",
   props: {},
+  components: {
+    SearchModel: SearchModel
+  },
   setup() {
     const router = useRouter();
     const state = reactive<State>({
@@ -203,6 +211,14 @@ export default defineComponent({
     function showSearch() {
       isShowSearch.value = true;
     }
+
+    function closeSearch() {
+      //
+    }
+    function submitSearch(param: CustomerQueryVO) {
+      console.log("param :>> ", param);
+      //data:CustomerQueryVO
+    }
     return {
       state,
       onLoad,
@@ -212,7 +228,9 @@ export default defineComponent({
       searchValue,
       globalSearch,
       showSearch,
-      isShowSearch
+      isShowSearch,
+      closeSearch,
+      submitSearch
     };
   }
 });

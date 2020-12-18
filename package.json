@@ -55,5 +55,8 @@
     "vue-loader": "^14.2.4",
     "webpack-post-compile-plugin": "^1.0.0",
     "webpack-transform-modules-plugin": "^0.4.3"
+  },
+  "resolutions": {
+    "fork-ts-checker-webpack-plugin-v5": "npm:fork-ts-checker-webpack-plugin@^6.0.0"
   }
 }

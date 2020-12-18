@@ -72,8 +72,8 @@ import area from "@/utils/area.js";
 import { editCustomer, getCustomerInfoById, setCustomer } from "@/services";
 import router from "@/router";
 import { Toast } from "vant";
-import { CustomerVO, UserInfoBO } from "../types";
-
+import { UserInfoBO } from "../types";
+import { CustomerVO } from "./types";
 export default defineComponent({
   setup() {
     const areaList = area;

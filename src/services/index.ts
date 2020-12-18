@@ -7,7 +7,7 @@ AV.init({
   serverURL: "https://server.lyq168.cn"
 });
 
-import { CustomerBO, CustomerVO } from "@/views/types";
+import { CustomerBO, CustomerVO } from "@/views/Customer/types";
 
 /**
  * 登录
