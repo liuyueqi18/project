@@ -39,7 +39,9 @@ const routes: Array<RouteRecordRaw> = [
       title: "客户列表"
     },
     component: () =>
-      import(/* webpackChunkName: "customer" */ "../views/Customer.vue")
+      import(
+        /* webpackChunkName: "customer" */ "../views/Customer/Customer.vue"
+      )
   },
   {
     path: "/customerinfopage",
@@ -49,7 +51,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "customerinfopage" */ "../views/CustomerInfoPage.vue"
+        /* webpackChunkName: "customerinfopage" */ "../views/Customer/CustomerInfoPage.vue"
       )
   },
   {
@@ -58,7 +60,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "个人中心"
     },
-    component: () => import(/* webpackChunkName: "user" */ "../views/User.vue")
+    component: () =>
+      import(/* webpackChunkName: "user" */ "../views/User/User.vue")
   }
 ];
 

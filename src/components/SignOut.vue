@@ -113,13 +113,13 @@ export default defineComponent({
     align-items: center;
     font-size: 30px;
     position: fixed;
-    bottom: 30px;
+    bottom: 60px;
     right: 30px;
     z-index: 9999;
   }
   & .user_dialog {
     position: fixed;
-    bottom: 100px;
+    bottom: 130px;
     right: 30px;
     & .user_select {
       width: 60px;

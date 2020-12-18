@@ -99,7 +99,6 @@ import dayjs from "dayjs";
 import { defineComponent, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Dialog, Toast } from "vant";
-import store from "../store";
 import {
   emailVerify,
   getUserInfoApi,
@@ -107,6 +106,7 @@ import {
   setUserInfoApi
 } from "@/services";
 import { CheckEmail, CheckUserName } from "@/utils";
+import store from "@/store";
 type State = {
   userId: string;
   userInfo: {

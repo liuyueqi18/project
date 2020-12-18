@@ -12,7 +12,7 @@
             <template #action>
               <div class="search-right">
                 <div @click="globalSearch">搜索</div>
-                <!-- <div>筛选</div> -->
+                <div @click="showSearch">筛选</div>
               </div>
             </template></van-search
           >
@@ -82,6 +82,12 @@
         </div>
       </van-list>
     </van-pull-refresh>
+    <van-popup
+      v-model:show="isShowSearch"
+      position="right"
+      :style="{ width: '70%', height: '100%' }"
+    >
+    </van-popup>
   </div>
 </template>
 
@@ -90,7 +96,7 @@ import { delCustomer, followCustomer, getCustomerListById } from "@/services";
 import { Dialog } from "vant";
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { CustomerBO } from "./types";
+import { CustomerBO } from "../types";
 type Props = {
   //
 };
@@ -117,6 +123,7 @@ export default defineComponent({
       refreshing: false
     });
     const searchValue = ref("");
+    const isShowSearch = ref(false);
 
     function onLoad() {
       getCustomerListById(state.userId, state.custList.length, {
@@ -193,6 +200,9 @@ export default defineComponent({
       onRefresh();
     }
 
+    function showSearch() {
+      isShowSearch.value = true;
+    }
     return {
       state,
       onLoad,
@@ -200,7 +210,9 @@ export default defineComponent({
       followCust,
       onSelect,
       searchValue,
-      globalSearch
+      globalSearch,
+      showSearch,
+      isShowSearch
     };
   }
 });

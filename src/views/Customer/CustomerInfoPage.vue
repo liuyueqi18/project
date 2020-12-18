@@ -69,10 +69,10 @@ type State = {};
 import { defineComponent, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import area from "@/utils/area.js";
-import { CustomerVO, UserInfoBO } from "./types";
 import { editCustomer, getCustomerInfoById, setCustomer } from "@/services";
 import router from "@/router";
 import { Toast } from "vant";
+import { CustomerVO, UserInfoBO } from "../types";
 
 export default defineComponent({
   setup() {
