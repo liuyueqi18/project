@@ -31,11 +31,12 @@ type State = {
   refreshing: boolean;
 };
 import { defineComponent, reactive } from "vue";
-import { requestGit } from "@/services/gitservices";
-import { GithubBO, GithubSearchType } from "./types";
+// import { requestGit } from "@/services/gitservices";
+import { getGitSearchList } from "@/services/gitApi";
+import { GithubBO, GitSearchType } from "./types";
 export default defineComponent({
   setup() {
-    const param = reactive({
+    const param = reactive<GitSearchType>({
       q: "javascript",
       // eslint-disable-next-line
       per_page: 10,
@@ -49,25 +50,22 @@ export default defineComponent({
       refreshing: false
     });
     function onLoad() {
-      requestGit
-        .get(`search/repositories`, { params: param })
-        .then((res: any) => {
-          if (state.refreshing) {
-            state.list = [];
-            state.refreshing = false;
-          }
-          if (res.items.length === 0) {
-            state.finished = true;
-            return;
-          }
-          state.total = res.total_count;
-          param.page++;
-          state.loading = false;
-          state.list = state.list.concat(res.items);
-          if (state.list.length >= state.total) {
-            state.finished = true;
-          }
-        });
+      getGitSearchList(param).then(res => {
+        if (state.refreshing) {
+          state.list = [];
+          state.refreshing = false;
+        }
+        if (res.list.length === 0) {
+          state.finished = true;
+          return;
+        }
+        state.total = res.total;
+        param.page++;
+        state.list = state.list.concat(res.list);
+        if (state.list.length >= state.total) {
+          state.finished = true;
+        }
+      });
     }
     function onRefresh() {
       state.finished = false;

@@ -2,7 +2,7 @@ import { GIT } from "@/constants";
 import Axios, { AxiosResponse } from "axios";
 import { Toast } from "vant";
 
-export const requestGit = Axios.create({
+const requestGit = Axios.create({
   baseURL: GIT,
   headers: {
     Accept: "application/vnd.github.v3+json"
@@ -27,3 +27,5 @@ requestGit.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default requestGit;
