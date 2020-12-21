@@ -12,6 +12,7 @@
     "webpack": "webpack --version"
   },
   "dependencies": {
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "dayjs": "^1.9.3",
     "leancloud-storage": "^4.7.0",

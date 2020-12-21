@@ -7,23 +7,23 @@ module.exports = {
             .use('eslint-loader')
             .tap(option => {
                 return {
-                  ...option,
-                  fix: true
+                    ...option,
+                    fix: true
                 };
-              });
+            });
 
     },
-    
+
     devServer: {
         disableHostCheck: true, //webpack4.0 开启热更新
         // proxy: {
-        //     "/*": {
-        //         target: "https://map.dev.lyq168.com",
-        //         changeOrigin: true, // 开启代理，在本地创建一个虚拟服务端
-        //         // ws: true, // 是否启用websockets
-        //         secure: false,
-        //         pathRewrite: {}
-        //     }
+        // "/github/api/*": {
+        //     target: "https://api.github.com",
+        //     changeOrigin: true, // 开启代理，在本地创建一个虚拟服务端
+        //     // ws: true, // 是否启用websockets
+        //     secure: false,
+        //     pathRewrite: {}
+        // }
         // }
     }
 };

@@ -55,6 +55,17 @@ const routes: Array<RouteRecordRaw> = [
       )
   },
   {
+    path: "/githubmodel",
+    name: "GithubModel",
+    meta: {
+      title: "github"
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "githubmodel" */ "../views/GithubModel/GithubModel.vue"
+      )
+  },
+  {
     path: "/user",
     name: "User",
     meta: {

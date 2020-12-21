@@ -31,6 +31,10 @@ export default defineComponent({
         {
           name: "客户",
           nameUrl: "Customer"
+        },
+        {
+          name: "GIT",
+          nameUrl: "GithubModel"
         }
       ]
     });
@@ -49,7 +53,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "@/style/main.scss";
 .home_page {
-  @extend %flex_space_between;
+  @extend %flex_start;
   padding: 20px 16px;
   .clild {
     width: 80px;
@@ -58,6 +62,7 @@ export default defineComponent({
     background: #eee;
     line-height: 80px;
     text-align: center;
+    margin-right: 10px;
   }
 }
 </style>

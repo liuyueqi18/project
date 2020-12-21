@@ -24,3 +24,10 @@ p{
   align-items: center;
 }
 
+%flex_start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
