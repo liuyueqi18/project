@@ -27,4 +27,6 @@ export type CustomerVO = {
 
 export type CustomerQueryVO = {
   custName: string;
+  custPhone: string;
+  gender: string;
 };

@@ -3,10 +3,24 @@
     <div>
       <van-field
         v-model="searchInfo.custName"
-        label="文本"
-        placeholder="输入框内容右对齐"
+        label="姓名"
+        placeholder="请输入姓名"
         input-align="right"
       />
+      <van-field
+        v-model="searchInfo.custPhone"
+        label="电话"
+        placeholder="请输入电话"
+        input-align="right"
+      />
+      <van-field name="radio" label="性别" input-align="right">
+        <template #input>
+          <van-radio-group v-model="searchInfo.gender" direction="horizontal">
+            <van-radio name="1" @click="handlerRadio('1')">男</van-radio>
+            <van-radio name="2" @click="handlerRadio('2')">女</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
     </div>
     <div class="btn-btm">
       <div class="btn close" @click="close">清 空</div>
@@ -16,23 +30,44 @@
 </template>
 <script lang="ts">
 import { CustomerQueryVO } from "@/views/Customer/types";
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({
-  setup() {
+  setup(props, ctx) {
     const searchInfo = reactive<CustomerQueryVO>({
-      custName: ""
+      custName: "",
+      custPhone: "",
+      gender: ""
     });
+
+    let oldType = "";
+
     function close() {
-      //
+      searchInfo.custName = "";
+      searchInfo.custPhone = "";
+      searchInfo.gender = "";
+      oldType = "";
+      ctx.emit("clearSearch");
     }
+
     function submit() {
-      //
+      ctx.emit("submitSearch", searchInfo);
+    }
+
+    function handlerRadio(type: string) {
+      if (oldType === type) {
+        oldType = "";
+        searchInfo.gender = "";
+      } else {
+        oldType = type;
+        searchInfo.gender = type;
+      }
     }
     return {
       searchInfo,
       close,
-      submit
+      submit,
+      handlerRadio
     };
   }
 });

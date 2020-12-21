@@ -7,7 +7,11 @@ AV.init({
   serverURL: "https://server.lyq168.cn"
 });
 
-import { CustomerBO, CustomerVO } from "@/views/Customer/types";
+import {
+  CustomerBO,
+  CustomerQueryVO,
+  CustomerVO
+} from "@/views/Customer/types";
 
 /**
  * 登录
@@ -163,9 +167,8 @@ export function resetPassword(email: string) {
 export function getCustomerListById(
   userId: string,
   start: number,
-  CustomerQueryVO: {
-    globalValue: string;
-  }
+  globalValue: string,
+  CustomerQueryVO: CustomerQueryVO
 ): Promise<[CustomerBO[], number]> {
   // 只查看自己的客户
   const CustomerUserVO = new AV.Query("Customer");
@@ -177,13 +180,24 @@ export function getCustomerListById(
   const globalQueryV4 = new AV.Query("Customer");
   const globalQueryV5 = new AV.Query("Customer");
   const globalQueryV6 = new AV.Query("Customer");
-  if (CustomerQueryVO.globalValue) {
-    globalQueryV1.contains("custName", CustomerQueryVO.globalValue);
-    globalQueryV2.contains("provinceName", CustomerQueryVO.globalValue);
-    globalQueryV3.contains("cityName", CustomerQueryVO.globalValue);
-    globalQueryV4.contains("areaName", CustomerQueryVO.globalValue);
-    globalQueryV5.contains("remark", CustomerQueryVO.globalValue);
-    globalQueryV6.contains("custPhone", CustomerQueryVO.globalValue);
+  if (globalValue) {
+    globalQueryV1.contains("custName", globalValue);
+    globalQueryV2.contains("provinceName", globalValue);
+    globalQueryV3.contains("cityName", globalValue);
+    globalQueryV4.contains("areaName", globalValue);
+    globalQueryV5.contains("remark", globalValue);
+    globalQueryV6.contains("custPhone", globalValue);
+  }
+  const CustomerQueryV1 = new AV.Query("Customer");
+  const CustomerQueryV2 = new AV.Query("Customer");
+  if (CustomerQueryVO.custName) {
+    CustomerQueryV1.equalTo("custName", CustomerQueryVO.custName);
+  }
+  if (CustomerQueryVO.custPhone) {
+    CustomerQueryV1.equalTo("custPhone", CustomerQueryVO.custPhone);
+  }
+  if (CustomerQueryVO.gender) {
+    CustomerQueryV1.equalTo("gender", CustomerQueryVO.gender);
   }
   const globalQuery = AV.Query.or(
     globalQueryV1,
@@ -193,7 +207,8 @@ export function getCustomerListById(
     globalQueryV5,
     globalQueryV6
   );
-  const Query = AV.Query.and(CustomerUserVO, globalQuery);
+  const CustomerQuery = AV.Query.and(CustomerQueryV1, CustomerQueryV2);
+  const Query = AV.Query.and(CustomerUserVO, CustomerQuery, globalQuery);
   Query.limit(10);
   Query.skip(start);
   Query.descending("isFollow");
@@ -293,7 +308,6 @@ export function getCustomerInfoById(id: string) {
     customerInfo
       .get(id)
       .then(res => {
-        console.log("getCustomerInfoById :>> ", res);
         resolve({
           userId: res.get("userId"),
           custPhone: res.get("custPhone"),

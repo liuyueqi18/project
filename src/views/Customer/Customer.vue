@@ -33,10 +33,10 @@
               <div class="phone">{{ item.phone }}</div>
               <div v-if="item.gender">
                 <svg class="icon" aria-hidden="true" v-if="item.gender === '1'">
-                  <use style="color:#4E80EF" xlink:href="#icon-nv"></use>
+                  <use style="color:#4E80EF" xlink:href="#icon-nan"></use>
                 </svg>
                 <svg class="icon" aria-hidden="true" v-if="item.gender === '2'">
-                  <use style="color:#4E80EF" xlink:href="#icon-nan"></use>
+                  <use style="color:#4E80EF" xlink:href="#icon-nv"></use>
                 </svg>
               </div>
             </div>
@@ -85,10 +85,11 @@
     <van-popup
       v-model:show="isShowSearch"
       position="right"
+      transition-appear
       :style="{ width: '70%', height: '100%' }"
     >
       <SearchModel
-        @closeSearch="closeSearch"
+        @clearSearch="clearSearch"
         @submitSearch="submitSearch"
       ></SearchModel>
     </van-popup>
@@ -132,11 +133,19 @@ export default defineComponent({
     });
     const searchValue = ref("");
     const isShowSearch = ref(false);
+    const CustomerQueryVO = reactive<CustomerQueryVO>({
+      custName: "",
+      custPhone: "",
+      gender: ""
+    });
 
     function onLoad() {
-      getCustomerListById(state.userId, state.custList.length, {
-        globalValue: searchValue.value
-      }).then(res => {
+      getCustomerListById(
+        state.userId,
+        state.custList.length,
+        searchValue.value,
+        CustomerQueryVO
+      ).then(res => {
         if (res[0].length === 0) {
           state.finished = true;
           return;
@@ -212,12 +221,19 @@ export default defineComponent({
       isShowSearch.value = true;
     }
 
-    function closeSearch() {
-      //
+    function clearSearch() {
+      CustomerQueryVO.custName = "";
+      CustomerQueryVO.custPhone = "";
+      isShowSearch.value = false;
+      onRefresh();
     }
+
     function submitSearch(param: CustomerQueryVO) {
-      console.log("param :>> ", param);
-      //data:CustomerQueryVO
+      CustomerQueryVO.custName = param.custName;
+      CustomerQueryVO.custPhone = param.custPhone;
+      CustomerQueryVO.gender = param.gender;
+      isShowSearch.value = false;
+      onRefresh();
     }
     return {
       state,
@@ -229,7 +245,7 @@ export default defineComponent({
       globalSearch,
       showSearch,
       isShowSearch,
-      closeSearch,
+      clearSearch,
       submitSearch
     };
   }
@@ -240,10 +256,15 @@ export default defineComponent({
 .customer {
   min-height: 100vh;
   background: #f3f6fc;
+  & >>> .van-search__action {
+    padding: 0;
+  }
   & .search-right {
     display: flex;
     align-items: center;
     color: #4e80ef;
+    padding: 0 12px 0 8px;
+    background: #fff;
     & div {
       margin-left: 5px;
     }
