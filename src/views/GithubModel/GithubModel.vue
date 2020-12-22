@@ -16,11 +16,27 @@
       >
         <div class="git-list" v-for="(item, i) in state.list" :key="i">
           <div class="git-info">
-            <span>{{ item.full_name }}</span>
+            <span class="title" @click="goHtmlUrl(item.htmlUrl)">{{
+              item.fullName
+            }}</span>
+            <div class="git-content">
+              <span>{{ item.description }}</span>
+              <span>created {{ item.createdAt }}</span>
+              <span>update {{ item.updatedAt }}</span>
+            </div>
             <div class="git-btm">
+              <div class="git-btm-info" v-if="item.language">
+                <svg class="icon" aria-hidden="true">
+                  <use
+                    style="color:#8d939e"
+                    xlink:href="#icon-script-language"
+                  ></use>
+                </svg>
+                <span> {{ item.language }}</span>
+              </div>
               <div class="git-btm-info">
                 <van-icon name="star-o" />
-                <span> {{ item.stargazers_count }}</span>
+                <span> {{ item.stargazersCount }}</span>
               </div>
             </div>
           </div>
@@ -46,7 +62,7 @@
 
 <script lang="ts">
 type State = {
-  list: GithubBO[];
+  list: GithubItem[];
   total: number;
   loading: boolean;
   finished: boolean;
@@ -55,11 +71,14 @@ type State = {
 import { defineComponent, reactive, ref } from "vue";
 // import { requestGit } from "@/services/gitservices";
 import { getGitSearchList } from "@/services/gitApi";
-import { GithubBO, GitSearchType, sortList } from "./types";
+import { GithubItem, GitSearchType, sortList } from "./types";
+import dayjs from "dayjs";
 export default defineComponent({
   setup() {
+    console.log(dayjs("2012-11-01T23:13:50Z").format("YYYY-MM-DD"));
+
     const param = reactive<GitSearchType>({
-      q: "javascript",
+      q: "Vue",
       // eslint-disable-next-line
       per_page: 50,
       page: 1,
@@ -90,6 +109,9 @@ export default defineComponent({
         state.loading = false;
         param.page++;
         state.list = state.list.concat(res.list);
+        for (const i in state.list[1]) {
+          console.log(i, state.list[1][i as keyof GithubItem]);
+        }
         if (state.list.length >= state.total) {
           state.finished = true;
         }
@@ -113,6 +135,11 @@ export default defineComponent({
       onRefresh();
     };
 
+    const goHtmlUrl = (url: string) => {
+      // window.location.href = url;
+      window.open(url);
+    };
+
     return {
       param,
       state,
@@ -121,7 +148,8 @@ export default defineComponent({
       onSelect,
       onSearch,
       onRefresh,
-      onLoad
+      onLoad,
+      goHtmlUrl
     };
   }
 });
@@ -137,15 +165,36 @@ export default defineComponent({
     background: #fff;
     border-radius: 8px;
     & .git-info {
+      & .title {
+        display: block;
+        padding-bottom: 4px;
+      }
+      & .git-content {
+        color: #8d939e;
+        font-size: 12px;
+        padding-bottom: 4px;
+        & span {
+          display: block;
+        }
+      }
       & .git-btm {
         display: flex;
-        padding-top: 4px;
         align-items: center;
         color: #8d939e;
         font-size: 12px;
         & .git-btm-info {
+          margin-right: 6px;
           display: flex;
           align-items: center;
+          & .icon {
+            color: #8d939e;
+            font-size: 10px;
+            width: 12px;
+            height: 12px;
+          }
+          & span {
+            margin-left: 3px;
+          }
         }
       }
     }

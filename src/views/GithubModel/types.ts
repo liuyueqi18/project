@@ -1,6 +1,21 @@
 export type GithubBO = {
   full_name: string;
   stargazers_count: string;
+  language: string;
+  created_at: string;
+  updated_at: string;
+  html_url: string;
+  description: string;
+};
+
+export type GithubItem = {
+  fullName: string;
+  stargazersCount: string;
+  language: string;
+  createdAt: string;
+  updatedAt: string;
+  htmlUrl: string;
+  description: string;
 };
 
 export type GithubSearchType = {
