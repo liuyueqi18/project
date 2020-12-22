@@ -5,7 +5,8 @@ import { Toast } from "vant";
 const requestGit = Axios.create({
   baseURL: GIT,
   headers: {
-    Accept: "application/vnd.github.v3+json"
+    Accept: "application/vnd.github.v3+json",
+    authorization: "token 68871da3a21c3eac7c84dc560eaf91ce2d27275d"
   },
   data: {},
   responseType: "json"
