@@ -69,14 +69,10 @@ type State = {
   refreshing: boolean;
 };
 import { defineComponent, reactive, ref } from "vue";
-// import { requestGit } from "@/services/gitservices";
 import { getGitSearchList } from "@/services/gitApi";
 import { GithubItem, GitSearchType, sortList } from "./types";
-import dayjs from "dayjs";
 export default defineComponent({
   setup() {
-    console.log(dayjs("2012-11-01T23:13:50Z").format("YYYY-MM-DD"));
-
     const param = reactive<GitSearchType>({
       q: "Vue",
       // eslint-disable-next-line
@@ -109,9 +105,6 @@ export default defineComponent({
         state.loading = false;
         param.page++;
         state.list = state.list.concat(res.list);
-        for (const i in state.list[1]) {
-          console.log(i, state.list[1][i as keyof GithubItem]);
-        }
         if (state.list.length >= state.total) {
           state.finished = true;
         }
@@ -168,6 +161,7 @@ export default defineComponent({
       & .title {
         display: block;
         padding-bottom: 4px;
+        color: #0366d6;
       }
       & .git-content {
         color: #8d939e;
