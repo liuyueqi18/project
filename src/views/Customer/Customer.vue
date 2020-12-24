@@ -224,6 +224,7 @@ export default defineComponent({
     function clearSearch() {
       CustomerQueryVO.custName = "";
       CustomerQueryVO.custPhone = "";
+      CustomerQueryVO.gender = "";
       isShowSearch.value = false;
       onRefresh();
     }
