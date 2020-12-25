@@ -61,16 +61,23 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, reactive, ref } from "vue";
+import { getOrderList } from "@/services/gitApi";
+import { GitSearchType, sortList } from "./types";
+
+/** 对于已经定义好的接口可以使用这种方式 对于未定义好的接口 可写两个Item类型先行开发 */
+type Response = ReturnType<typeof getOrderList> extends Promise<infer T>
+  ? T
+  : never;
+
 type State = {
-  list: GithubItem[];
+  list: Response["list"];
   total: number;
   loading: boolean;
   finished: boolean;
   refreshing: boolean;
 };
-import { defineComponent, reactive, ref } from "vue";
-import { getGitSearchList } from "@/services/gitApi";
-import { GithubItem, GitSearchType, sortList } from "./types";
+
 export default defineComponent({
   setup() {
     const param = reactive<GitSearchType>({
@@ -92,7 +99,7 @@ export default defineComponent({
     const showPopover = ref(false);
     const actions = sortList;
     function onLoad() {
-      getGitSearchList(param).then(res => {
+      getOrderList(param).then(res => {
         if (state.refreshing) {
           state.list = [];
           state.refreshing = false;

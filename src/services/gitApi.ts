@@ -1,10 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import requestGit from "./gitservices";
+import request from "./gitservices";
 import { GithubSearchType, GitSearchType } from "@/views/GithubModel/types";
 import dayjs from "dayjs";
 
-export async function getGitSearchList(params: GitSearchType) {
-  const res = await requestGit.get<unknown, GithubSearchType>(
+export async function getOrderList(params: GitSearchType) {
+  const res = await request.post<unknown, GithubSearchType>(
     "search/repositories",
     {
       params: params

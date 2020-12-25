@@ -8,16 +8,6 @@ export type GithubBO = {
   description: string;
 };
 
-export type GithubItem = {
-  fullName: string;
-  stargazersCount: string;
-  language: string;
-  createdAt: string;
-  updatedAt: string;
-  htmlUrl: string;
-  description: string;
-};
-
 export type GithubSearchType = {
   total_count: number;
   items: GithubBO[];
