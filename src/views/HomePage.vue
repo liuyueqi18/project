@@ -35,6 +35,10 @@ export default defineComponent({
         {
           name: "GIT",
           nameUrl: "GithubModel"
+        },
+        {
+          name: "天气",
+          nameUrl: "Weather"
         }
       ]
     });

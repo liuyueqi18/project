@@ -1,9 +1,9 @@
-import request from "./gitservices";
+import request from "@/services/git/gitservices";
 import { GithubSearchType, GitSearchType } from "@/views/GithubModel/types";
 import dayjs from "dayjs";
 
 export async function getOrderList(params: GitSearchType) {
-  const res = await request.post<unknown, GithubSearchType>(
+  const res = await request.get<unknown, GithubSearchType>(
     "search/repositories",
     {
       params: params

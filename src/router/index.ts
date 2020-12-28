@@ -66,6 +66,15 @@ const routes: Array<RouteRecordRaw> = [
       )
   },
   {
+    path: "/weather",
+    name: "Weather",
+    meta: {
+      title: "天气"
+    },
+    component: () =>
+      import(/* webpackChunkName: "weather" */ "../views/Weather/Weather.vue")
+  },
+  {
     path: "/user",
     name: "User",
     meta: {
