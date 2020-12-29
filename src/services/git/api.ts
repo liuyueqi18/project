@@ -1,4 +1,5 @@
-import request from "@/services/git/gitservices";
+import request from "@/services/git/services";
+
 import { GithubSearchType, GitSearchType } from "@/views/GithubModel/types";
 import dayjs from "dayjs";
 

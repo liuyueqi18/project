@@ -25,5 +25,9 @@ module.exports = {
         //     pathRewrite: {}
         // }
         // }
+    },
+
+    configureWebpack: {
+        externals: { 'AMap': "AMap" }
     }
 };

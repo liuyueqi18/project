@@ -62,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
-import { getOrderList } from "@/services/git/gitApi";
+import { getOrderList } from "@/services/git/api";
 import { GitSearchType, sortList } from "./types";
 
 /** 对于已经定义好的接口可以使用这种方式 对于未定义好的接口 可写两个Item类型先行开发 */

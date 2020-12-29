@@ -17,6 +17,7 @@
     "dayjs": "^1.9.3",
     "leancloud-storage": "^4.7.0",
     "vant": "^3.0.0-rc.1",
+    "vconsole": "^3.3.4",
     "vue": "^3.0.2",
     "vue-router": "^4.0.0-0",
     "vue-server-renderer": "^2.6.12",
