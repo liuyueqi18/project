@@ -2,36 +2,55 @@
   <div class="weather">
     <div class="top">
       <p class="address">{{ state.city.name }}</p>
-      <p class="text">{{ state.cityWeather.text }}</p>
-      <p class="temp">{{ state.cityWeather.temp }}</p>
+      <p class="text">{{ state.cityWeatherNow.text }}</p>
+      <p class="temp">{{ state.cityWeatherNow.temp }}</p>
     </div>
+    <div class="weather7d">
+      <div
+        class="weather7d-detail"
+        v-for="(item, i) in state.cityWeather7d"
+        :key="i"
+      >
+        <span>{{ item.week }}</span>
+        <div class="weather7d-icon-box">
+          <img class="weather7d-icon" :src="getWeatherUrl(item.iconDay)" />
+        </div>
+        <span style="text-align:right;"
+          >{{ item.tempMax }} &nbsp;&nbsp; {{ item.tempMin }}</span
+        >
+      </div>
+    </div>
+
     <div class="detail">
       <div class="detail_box">
         <span class="label">云量</span>
-        <span class="value">{{ state.cityWeather.cloud }}%</span>
+        <span class="value">{{ state.cityWeatherNow.cloud || "0" }}%</span>
       </div>
       <div class="detail_box">
         <span class="label">降水量</span>
-        <span class="value">{{ state.cityWeather.precip }}毫米</span>
+        <span class="value">{{ state.cityWeatherNow.precip || "0" }}毫米</span>
       </div>
       <div class="detail_box">
         <span class="label">相对湿度</span>
-        <span class="value">{{ state.cityWeather.humidity }}%</span>
+        <span class="value">{{ state.cityWeatherNow.humidity || "0" }}%</span>
       </div>
       <div class="detail_box">
         <span class="label">风</span>
         <span class="value"
-          >{{ state.cityWeather.windDir }} {{ state.cityWeather.windScale }}级
-          {{ state.cityWeather.windSpeed }}公里/小时</span
+          >{{ state.cityWeatherNow.windDir || "0" }}
+          {{ state.cityWeatherNow.windScale || "0" }}级
+          {{ state.cityWeatherNow.windSpeed || "0" }}公里/小时</span
         >
       </div>
       <div class="detail_box">
         <span class="label">体感温度</span>
-        <span class="value">{{ state.cityWeather.feelsLike }}</span>
+        <span class="value">{{ state.cityWeatherNow.feelsLike || "0" }}</span>
       </div>
       <div class="detail_box">
         <span class="label">气压</span>
-        <span class="value">{{ state.cityWeather.pressure }}百帕</span>
+        <span class="value"
+          >{{ state.cityWeatherNow.pressure || "0" }}百帕</span
+        >
       </div>
     </div>
     <div class="map" id="map"></div>
@@ -39,21 +58,38 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, reactive } from "vue";
-import { getCityId, getCityWeather } from "@/services/weather/api";
+import {
+  getCityId,
+  getCityWeatherNow,
+  getCityWeather7d,
+  getCityWeather24h
+} from "@/services/weather/api";
 import AMap from "AMap";
 import { ItemCityBO } from "./types";
 import { Toast } from "vant";
 
-type Response = ReturnType<typeof getCityWeather> extends Promise<infer T>
-  ? T
-  : never;
 type ResponseCity = ReturnType<typeof getCityId> extends Promise<infer T>
   ? T
   : never;
+
+type ResponseNow = ReturnType<typeof getCityWeatherNow> extends Promise<infer T>
+  ? T
+  : never;
+
+type Response7d = ReturnType<typeof getCityWeather7d> extends Promise<infer T>
+  ? T
+  : never;
+
 type State = {
   city: ItemCityBO;
-  cityWeather: Response;
+  cityWeatherNow: ResponseNow;
+  cityWeather7d: Response7d["daily"];
 };
+
+const iconUrl = {};
+const r = require.context("@/assets/weather", true, /\.png$/);
+r.keys().forEach(key => ((iconUrl as any)[key as string] = r(key)));
+
 export default defineComponent({
   setup() {
     const state = reactive<State>({
@@ -72,7 +108,7 @@ export default defineComponent({
         tz: "",
         utcOffset: ""
       },
-      cityWeather: {
+      cityWeatherNow: {
         cloud: "", // 实况云量，百分比数值
         dew: "", // 实况露点温度
         feelsLike: "", // 实况体感温度，默认单位：摄氏度
@@ -89,7 +125,36 @@ export default defineComponent({
         windDir: "", // 实况风向
         windScale: "", // 实况风力等级
         windSpeed: "" // 实况风速，公里/小时
-      }
+      },
+      /** 
+        daily.fxDate	预报日期	2013-05-31
+        daily.sunrise	日出时间	07:34
+        daily.sunset	日落时间	17:21
+        daily.moonrise	月升时间	16:09
+        daily.moonset	月落时间	04:21
+        daily.moonPhase	月相名称	满月
+        daily.tempMax	预报当天最高温度	4
+        daily.tempMin	预报当天最低温度	-5
+        daily.iconDay	预报白天天气状况的图标代码，图标可通过天气状况和图标下载	100
+        daily.textDay	预报白天天气状况文字描述，包括阴晴雨雪等天气状态的描述	晴
+        daily.iconNight	预报夜间天气状况的图标代码，图标可通过天气状况和图标下载	100
+        daily.textNight	预报晚间天气状况文字描述，包括阴晴雨雪等天气状态的描述	晴
+        daily.wind360Day	预报白天风向360角度	305
+        daily.windDirDay	预报白天风向	西北
+        daily.windScaleDay	预报白天风力等级	3-4
+        daily.windSpeedDay	预报白天风速，公里/小时	15
+        daily.wind360Night	预报夜间风向360角度	305
+        daily.WindDirNight	预报夜间当天风向	西北
+        daily.windScaleNight	预报夜间风力等级	3-4
+        daily.windSpeedNight	预报夜间风速，公里/小时	15
+        daily.humidity	预报当天相对湿度，百分比数值	40
+        daily.precip	预报当天降水量，默认单位：毫米	1.2
+        daily.pressure	预报当天大气压强，默认单位：百帕	1020
+        daily.vis	预报当天能见度，默认单位：公里	10
+        daily.cloud	预报当天云量，百分比数值	23
+        daily.uvIndex	预报当天紫外线强度指数	3
+       */
+      cityWeather7d: []
     });
     let adcode = "";
     const mapObj = new AMap.Map("map");
@@ -120,9 +185,15 @@ export default defineComponent({
       });
     }
     function getCityWeatherById(id: string) {
-      getCityWeather({ location: id }).then(res => {
-        state.cityWeather = res;
+      getCityWeatherNow({ location: id }).then(res => {
+        state.cityWeatherNow = res;
       });
+      getCityWeather7d({ location: id }).then(res => {
+        state.cityWeather7d = res.daily;
+      });
+      // getCityWeather24h({ location: id }).then(res => {
+      //   console.log("res 24:>> ", res);
+      // });
     }
     function getCityIdByAdcode() {
       getCityId({ location: adcode ? adcode : "310000" }).then(res => {
@@ -133,6 +204,9 @@ export default defineComponent({
           Toast("请求失败");
         }
       });
+    }
+    function getWeatherUrl(status: string) {
+      return (iconUrl as any)[`./${status}.png`];
     }
     onMounted(() => {
       geolocation()
@@ -145,7 +219,9 @@ export default defineComponent({
         });
     });
     return {
-      state
+      state,
+
+      getWeatherUrl
     };
   }
 });
@@ -172,12 +248,36 @@ export default defineComponent({
       font-weight: 200;
     }
   }
+  & .weather7d {
+    padding: 16px 16px;
+    border-top: 1px solid rgb(248 249 253 / 0.4);
+    border-bottom: 1px solid rgb(248 249 253 / 0.4);
+    & .weather7d-detail {
+      opacity: 0.9;
+      color: #f8f9fd;
+      display: flex;
+      justify-content: space-between;
+      padding: 1px 0;
+      & span {
+        min-width: 50px;
+      }
+      & .weather7d-icon-box {
+        min-width: 24px;
+        text-align: left;
+        & .weather7d-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
   & .detail {
     color: #f8f9fd;
     padding: 0 16px;
     & .detail_box {
       padding: 7px 16px 9px 16px;
-      border-top: 1px solid rgb(248 249 253 / 0.4);
+      border-bottom: 1px solid rgb(248 249 253 / 0.4);
       & .label {
         font-size: 13px;
         display: block;
@@ -189,7 +289,7 @@ export default defineComponent({
     }
   }
   & .detail .detail_box:last-of-type {
-    border-bottom: 1px solid rgb(248 249 253 / 0.4);
+    border-bottom: 0;
   }
   & .map {
     width: 0;

@@ -1,5 +1,10 @@
 import { requestV2, requestV7, key } from "@/services/weather/services";
-import { CityBO, CityWeather } from "@/views/Weather/types";
+import {
+  CityBO,
+  CityWeather,
+  CityWeather7d,
+  weekDay
+} from "@/views/Weather/types";
 import dayjs from "dayjs";
 import { Toast } from "vant";
 
@@ -23,7 +28,7 @@ export async function getCityId(params: { location: string }) {
   }
 }
 
-export async function getCityWeather(params: { location: string }) {
+export async function getCityWeatherNow(params: { location: string }) {
   const res = await requestV7.get<unknown, CityWeather>("/v7/weather/now", {
     params: {
       ...params,
@@ -41,4 +46,52 @@ export async function getCityWeather(params: { location: string }) {
       code: res.code
     };
   }
+}
+
+export async function getCityWeather7d(params: { location: string }) {
+  const res = await requestV7.get<unknown, CityWeather7d>("/v7/weather/10d", {
+    params: {
+      ...params,
+      key: key
+    }
+  });
+  if (res.code === "200") {
+    return {
+      code: res.code,
+      daily: res.daily.map(item => {
+        return {
+          ...item,
+          week: weekDay[dayjs(item.fxDate).day()],
+          updateTime: dayjs(res.updateTime).format("YYYY-MM-DD HH:mm:ss")
+        };
+      })
+    };
+  } else {
+    return {
+      code: res.code
+    };
+  }
+}
+
+export async function getCityWeather24h(params: { location: string }) {
+  const res = await requestV7.get<unknown, any>("/v7/weather/24h", {
+    params: {
+      ...params,
+      key: key
+    }
+  });
+  return {
+    res
+  };
+  //   if (res.code === "200") {
+  //     return {
+  //       ...res.now,
+  //       updateTime: dayjs(res.updateTime).format("YYYY-MM-DD HH:mm:ss"),
+  //       obsTime: dayjs(res.now.obsTime).format("YYYY-MM-DD HH:mm:ss")
+  //     };
+  //   } else {
+  //     return {
+  //       code: res.code
+  //     };
+  //   }
 }
