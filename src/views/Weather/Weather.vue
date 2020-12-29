@@ -110,7 +110,7 @@ export default defineComponent({
           mapObj.addControl(geolocation);
           geolocation.getCurrentPosition(function(status: any, result: any) {
             if (status === "complete") {
-              adcode = result.addressComponent[0].id;
+              adcode = result.addressComponent.adcode;
               resolve(result);
             } else {
               reject();
