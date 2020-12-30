@@ -203,7 +203,7 @@ export default defineComponent({
       });
     }
     function getCityIdByAdcode() {
-      getCityId({ location: adcode ? "140000" : "310000" }).then(res => {
+      getCityId({ location: adcode ? adcode : "310000" }).then(res => {
         if (res.code === "200") {
           state.city = res.list[0];
           getCityWeatherById(state.city.id);
