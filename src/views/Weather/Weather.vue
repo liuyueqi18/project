@@ -214,7 +214,7 @@ export default defineComponent({
       });
     }
     function getWeatherUrl(status: string) {
-      return (iconUrl as any)[`./${status}.png`];
+      return (iconUrl as any)[`./heweather-icon-S1-source_${status}.png`];
     }
 
     function scrollTop(value: { scrollTop: number; isFixed: boolean }) {
