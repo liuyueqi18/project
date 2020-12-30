@@ -3,7 +3,29 @@
     <div class="top">
       <p class="address">{{ state.city.name }}</p>
       <p class="text">{{ state.cityWeatherNow.text }}</p>
-      <p class="temp">{{ state.cityWeatherNow.temp }}</p>
+      <transition name="van-fade">
+        <p class="temp" v-if="isShowTemp">
+          {{ state.cityWeatherNow.temp }}
+        </p>
+      </transition>
+    </div>
+    <div class="weather24h">
+      <div class="weather24h-warp">
+        <div
+          class="weather24h-warp-li"
+          v-for="(item, i) in state.cityWeather24h"
+          :key="i"
+        >
+          <span class="weather24h-fxTime">{{ item.fxTime }}</span>
+          <span class="weather24h-pop">{{
+            item.pop !== "0" ? item.pop + "%" : ""
+          }}</span>
+          <div class="weather24h-icon-box">
+            <img class="weather24h-icon" :src="getWeatherUrl(item.icon)" />
+          </div>
+          <span class="weather24h-temp">{{ item.temp }}</span>
+        </div>
+      </div>
     </div>
     <div class="weather7d">
       <div
@@ -57,7 +79,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import {
   getCityId,
   getCityWeatherNow,
@@ -80,10 +102,15 @@ type Response7d = ReturnType<typeof getCityWeather7d> extends Promise<infer T>
   ? T
   : never;
 
+type Response24 = ReturnType<typeof getCityWeather24h> extends Promise<infer T>
+  ? T
+  : never;
+
 type State = {
   city: ItemCityBO;
   cityWeatherNow: ResponseNow;
   cityWeather7d: Response7d["daily"];
+  cityWeather24h: Response24["hourly"];
 };
 
 const iconUrl = {};
@@ -109,55 +136,29 @@ export default defineComponent({
         utcOffset: ""
       },
       cityWeatherNow: {
-        cloud: "", // 实况云量，百分比数值
-        dew: "", // 实况露点温度
-        feelsLike: "", // 实况体感温度，默认单位：摄氏度
-        humidity: "", // 实况相对湿度，百分比数值
-        icon: "", // 当前天气状况和图标的代码
-        obsTime: "", // 实况观测时间
-        precip: "", // 实况降水量，默认单位：毫米
-        pressure: "", // 实况大气压强，默认单位：百帕
-        temp: "", // 实况温度，默认单位：摄氏度
-        text: "", // 实况天气状况的文字描述，包括阴晴雨雪等天气状态的描述
-        updateTime: "", // 更新时间
-        vis: "", // 实况能见度，默认单位：公里
-        wind360: "", // 实况风向360角度
-        windDir: "", // 实况风向
-        windScale: "", // 实况风力等级
-        windSpeed: "" // 实况风速，公里/小时
+        cloud: "",
+        dew: "",
+        feelsLike: "",
+        humidity: "",
+        icon: "",
+        obsTime: "",
+        precip: "",
+        pressure: "",
+        temp: "",
+        text: "",
+        updateTime: "",
+        vis: "",
+        wind360: "",
+        windDir: "",
+        windScale: "",
+        windSpeed: ""
       },
-      /** 
-        daily.fxDate	预报日期	2013-05-31
-        daily.sunrise	日出时间	07:34
-        daily.sunset	日落时间	17:21
-        daily.moonrise	月升时间	16:09
-        daily.moonset	月落时间	04:21
-        daily.moonPhase	月相名称	满月
-        daily.tempMax	预报当天最高温度	4
-        daily.tempMin	预报当天最低温度	-5
-        daily.iconDay	预报白天天气状况的图标代码，图标可通过天气状况和图标下载	100
-        daily.textDay	预报白天天气状况文字描述，包括阴晴雨雪等天气状态的描述	晴
-        daily.iconNight	预报夜间天气状况的图标代码，图标可通过天气状况和图标下载	100
-        daily.textNight	预报晚间天气状况文字描述，包括阴晴雨雪等天气状态的描述	晴
-        daily.wind360Day	预报白天风向360角度	305
-        daily.windDirDay	预报白天风向	西北
-        daily.windScaleDay	预报白天风力等级	3-4
-        daily.windSpeedDay	预报白天风速，公里/小时	15
-        daily.wind360Night	预报夜间风向360角度	305
-        daily.WindDirNight	预报夜间当天风向	西北
-        daily.windScaleNight	预报夜间风力等级	3-4
-        daily.windSpeedNight	预报夜间风速，公里/小时	15
-        daily.humidity	预报当天相对湿度，百分比数值	40
-        daily.precip	预报当天降水量，默认单位：毫米	1.2
-        daily.pressure	预报当天大气压强，默认单位：百帕	1020
-        daily.vis	预报当天能见度，默认单位：公里	10
-        daily.cloud	预报当天云量，百分比数值	23
-        daily.uvIndex	预报当天紫外线强度指数	3
-       */
+      cityWeather24h: [],
       cityWeather7d: []
     });
     let adcode = "";
     const mapObj = new AMap.Map("map");
+    const isShowTemp = ref(true);
     function geolocation() {
       return new Promise((resolve, reject) => {
         mapObj.plugin("AMap.Geolocation", function() {
@@ -175,8 +176,12 @@ export default defineComponent({
           mapObj.addControl(geolocation);
           geolocation.getCurrentPosition(function(status: any, result: any) {
             if (status === "complete") {
-              adcode = result.addressComponent.adcode;
-              resolve(result);
+              if (result.addressComponent) {
+                adcode = result.addressComponent.adcode;
+                resolve(result);
+              } else {
+                reject();
+              }
             } else {
               reject();
             }
@@ -191,9 +196,10 @@ export default defineComponent({
       getCityWeather7d({ location: id }).then(res => {
         state.cityWeather7d = res.daily;
       });
-      // getCityWeather24h({ location: id }).then(res => {
-      //   console.log("res 24:>> ", res);
-      // });
+      getCityWeather24h({ location: id }).then(res => {
+        console.log("res.hourly :>> ", res.hourly);
+        state.cityWeather24h = res.hourly;
+      });
     }
     function getCityIdByAdcode() {
       getCityId({ location: adcode ? adcode : "310000" }).then(res => {
@@ -208,6 +214,14 @@ export default defineComponent({
     function getWeatherUrl(status: string) {
       return (iconUrl as any)[`./${status}.png`];
     }
+
+    function scrollTop(value: { scrollTop: number; isFixed: boolean }) {
+      if (value.scrollTop > 70) {
+        isShowTemp.value = false;
+      } else {
+        isShowTemp.value = true;
+      }
+    }
     onMounted(() => {
       geolocation()
         .then(() => {
@@ -220,8 +234,9 @@ export default defineComponent({
     });
     return {
       state,
-
-      getWeatherUrl
+      getWeatherUrl,
+      scrollTop,
+      isShowTemp
     };
   }
 });
@@ -235,7 +250,7 @@ export default defineComponent({
     color: #f8f9fd;
     padding-top: 60px;
     text-align: center;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
     & .address {
       font-size: 34px;
       font-weight: 300;
@@ -246,6 +261,54 @@ export default defineComponent({
     & .temp {
       font-size: 70px;
       font-weight: 200;
+    }
+  }
+  & .weather24h {
+    height: 110px;
+    width: 100vw;
+    border-top: 1px solid rgb(248 249 253 / 0.4);
+    overflow: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    color: #f8f9fd;
+    padding: 10px 0;
+    & .weather24h-warp {
+      display: flex;
+      height: 140px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      & .weather24h-warp-li {
+        margin: 0 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        & span {
+          white-space: nowrap;
+        }
+        & .weather24h-pop {
+          color: #94ccec;
+          margin-top: 3px;
+          margin-bottom: 5px;
+          height: 16px;
+        }
+        & .weather24h-icon-box {
+          width: 18px;
+          height: 18px;
+          margin-bottom: 26px;
+          & .weather24h-icon {
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+    }
+    & .weather24h-warp .weather24h-warp-li:first-of-type {
+      padding-left: 16px;
+      margin-left: 0;
+    }
+    & .weather24h-warp .weather24h-warp-li:last-of-type {
+      padding-right: 16px;
+      margin-right: 0;
     }
   }
   & .weather7d {
@@ -271,12 +334,11 @@ export default defineComponent({
       }
     }
   }
-
   & .detail {
     color: #f8f9fd;
     padding: 0 16px;
     & .detail_box {
-      padding: 7px 16px 9px 16px;
+      padding: 7px 0px 9px 0px;
       border-bottom: 1px solid rgb(248 249 253 / 0.4);
       & .label {
         font-size: 13px;

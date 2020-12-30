@@ -2,6 +2,7 @@ import { requestV2, requestV7, key } from "@/services/weather/services";
 import {
   CityBO,
   CityWeather,
+  CityWeather24h,
   CityWeather7d,
   weekDay
 } from "@/views/Weather/types";
@@ -74,24 +75,26 @@ export async function getCityWeather7d(params: { location: string }) {
 }
 
 export async function getCityWeather24h(params: { location: string }) {
-  const res = await requestV7.get<unknown, any>("/v7/weather/24h", {
+  const res = await requestV7.get<unknown, CityWeather24h>("/v7/weather/24h", {
     params: {
       ...params,
       key: key
     }
   });
-  return {
-    res
-  };
-  //   if (res.code === "200") {
-  //     return {
-  //       ...res.now,
-  //       updateTime: dayjs(res.updateTime).format("YYYY-MM-DD HH:mm:ss"),
-  //       obsTime: dayjs(res.now.obsTime).format("YYYY-MM-DD HH:mm:ss")
-  //     };
-  //   } else {
-  //     return {
-  //       code: res.code
-  //     };
-  //   }
+  if (res.code === "200") {
+    return {
+      code: res.code,
+      hourly: res.hourly.map(item => {
+        return {
+          ...item,
+          fxTime: `${dayjs(item.fxTime).format("HH")}时`,
+          updateTime: dayjs(res.updateTime).format("YYYY-MM-DD HH:mm:ss")
+        };
+      })
+    };
+  } else {
+    return {
+      code: res.code
+    };
+  }
 }
