@@ -37,9 +37,10 @@
         <div class="weather7d-icon-box">
           <img class="weather7d-icon" :src="getWeatherUrl(item.iconDay)" />
         </div>
-        <span style="text-align:right;"
-          >{{ item.tempMax }} &nbsp;&nbsp; {{ item.tempMin }}</span
-        >
+        <div class="weather7d-temp">
+          <span style="text-align:right;">{{ item.tempMax }}</span>
+          <span style="text-align:right;">{{ item.tempMin }}</span>
+        </div>
       </div>
     </div>
 
@@ -290,9 +291,10 @@ export default defineComponent({
         }
         & .weather24h-pop {
           color: #94ccec;
-          margin-top: 3px;
-          margin-bottom: 5px;
-          height: 16px;
+          margin-top: 5px;
+          margin-bottom: 3px;
+          height: 14px;
+          font-size: 14px;
         }
         & .weather24h-icon-box {
           width: 22px;
@@ -324,8 +326,15 @@ export default defineComponent({
       display: flex;
       justify-content: space-between;
       padding: 1px 0;
-      & span {
-        min-width: 90px;
+      & .weather7d-temp {
+        display: flex;
+        & span {
+          text-align: right;
+          min-width: 30px;
+        }
+      }
+      & .weather7d-temp span:last-of-type {
+        margin-left: 10px;
       }
       & .weather7d-icon-box {
         min-width: 24px;
