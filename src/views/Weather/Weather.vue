@@ -75,6 +75,7 @@
         >
       </div>
     </div>
+    <div class="division"></div>
     <div class="map" id="map"></div>
   </div>
 </template>
@@ -202,7 +203,7 @@ export default defineComponent({
       });
     }
     function getCityIdByAdcode() {
-      getCityId({ location: adcode ? adcode : "310000" }).then(res => {
+      getCityId({ location: adcode ? "140000" : "310000" }).then(res => {
         if (res.code === "200") {
           state.city = res.list[0];
           getCityWeatherById(state.city.id);
@@ -245,6 +246,8 @@ export default defineComponent({
 .weather {
   background: #75a4c7;
   min-height: 100vh;
+  font-size: 18px;
+  padding-bottom: 10vh;
   & .top {
     margin: 0 auto;
     color: #f8f9fd;
@@ -264,7 +267,7 @@ export default defineComponent({
     }
   }
   & .weather24h {
-    height: 110px;
+    height: 120px;
     width: 100vw;
     border-top: 1px solid rgb(248 249 253 / 0.4);
     overflow: hidden;
@@ -292,12 +295,12 @@ export default defineComponent({
           height: 16px;
         }
         & .weather24h-icon-box {
-          width: 18px;
-          height: 18px;
+          width: 22px;
+          height: 22px;
           margin-bottom: 26px;
           & .weather24h-icon {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
           }
         }
       }
@@ -322,14 +325,14 @@ export default defineComponent({
       justify-content: space-between;
       padding: 1px 0;
       & span {
-        min-width: 50px;
+        min-width: 90px;
       }
       & .weather7d-icon-box {
         min-width: 24px;
         text-align: left;
         & .weather7d-icon {
-          width: 20px;
-          height: 20px;
+          width: 22px;
+          height: 22px;
         }
       }
     }
@@ -352,6 +355,9 @@ export default defineComponent({
   }
   & .detail .detail_box:last-of-type {
     border-bottom: 0;
+  }
+  & .division {
+    border-bottom: 1px solid rgb(248 249 253 / 0.4);
   }
   & .map {
     width: 0;
