@@ -43,9 +43,7 @@ export async function getCityWeatherNow(params: { location: string }) {
       obsTime: dayjs(res.now.obsTime).format("YYYY-MM-DD HH:mm:ss")
     };
   } else {
-    return {
-      code: res.code
-    };
+    Toast("错误");
   }
 }
 
@@ -68,6 +66,7 @@ export async function getCityWeather7d(params: { location: string }) {
       })
     };
   } else {
+    Toast("错误");
     return {
       code: res.code
     };
@@ -93,6 +92,7 @@ export async function getCityWeather24h(params: { location: string }) {
       })
     };
   } else {
+    Toast("错误");
     return {
       code: res.code
     };

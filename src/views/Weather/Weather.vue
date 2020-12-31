@@ -1,32 +1,36 @@
 <template>
   <div class="weather">
     <div class="top">
-      <p class="address">{{ state.city.name }}</p>
-      <p class="text">{{ state.cityWeatherNow.text }}</p>
+      <van-sticky @scroll="scrollTop">
+        <p class="address">{{ state.city.name }}</p>
+        <p class="text">{{ state.cityWeatherNow.text }}</p>
+      </van-sticky>
       <transition name="van-fade">
-        <p class="temp" v-if="isShowTemp">
+        <p class="temp" :style="{ opacity: tempOpacity }">
           {{ state.cityWeatherNow.temp }}
         </p>
       </transition>
     </div>
-    <div class="weather24h">
-      <div class="weather24h-warp">
-        <div
-          class="weather24h-warp-li"
-          v-for="(item, i) in state.cityWeather24h"
-          :key="i"
-        >
-          <span class="weather24h-fxTime">{{ item.fxTime }}</span>
-          <span class="weather24h-pop">{{
-            item.pop !== "0" ? item.pop + "%" : ""
-          }}</span>
-          <div class="weather24h-icon-box">
-            <img class="weather24h-icon" :src="getWeatherUrl(item.icon)" />
+    <van-sticky :offset-top="weather24hTop" @scroll="scrollWeather24">
+      <div class="weather24h">
+        <div class="weather24h-warp">
+          <div
+            class="weather24h-warp-li"
+            v-for="(item, i) in state.cityWeather24h"
+            :key="i"
+          >
+            <span class="weather24h-fxTime">{{ item.fxTime }}</span>
+            <span class="weather24h-pop">{{
+              item.pop !== "0" ? item.pop + "%" : ""
+            }}</span>
+            <div class="weather24h-icon-box">
+              <img class="weather24h-icon" :src="getWeatherUrl(item.icon)" />
+            </div>
+            <span class="weather24h-temp">{{ item.temp }}</span>
           </div>
-          <span class="weather24h-temp">{{ item.temp }}</span>
         </div>
       </div>
-    </div>
+    </van-sticky>
     <div class="weather7d">
       <div
         class="weather7d-detail"
@@ -43,7 +47,6 @@
         </div>
       </div>
     </div>
-
     <div class="detail">
       <div class="detail_box">
         <span class="label">云量</span>
@@ -77,6 +80,7 @@
       </div>
     </div>
     <div class="division"></div>
+
     <div class="map" id="map"></div>
   </div>
 </template>
@@ -161,6 +165,8 @@ export default defineComponent({
     let adcode = "";
     const mapObj = new AMap.Map("map");
     const isShowTemp = ref(true);
+    const tempOpacity = ref(1);
+    const weather24hTop = ref("");
     function geolocation() {
       return new Promise((resolve, reject) => {
         mapObj.plugin("AMap.Geolocation", function() {
@@ -194,12 +200,12 @@ export default defineComponent({
     function getCityWeatherById(id: string) {
       getCityWeatherNow({ location: id }).then(res => {
         state.cityWeatherNow = res;
+        console.log("res :>> ", state.cityWeatherNow);
       });
       getCityWeather7d({ location: id }).then(res => {
         state.cityWeather7d = res.daily;
       });
       getCityWeather24h({ location: id }).then(res => {
-        console.log("res.hourly :>> ", res.hourly);
         state.cityWeather24h = res.hourly;
       });
     }
@@ -218,11 +224,16 @@ export default defineComponent({
     }
 
     function scrollTop(value: { scrollTop: number; isFixed: boolean }) {
-      if (value.scrollTop > 70) {
-        isShowTemp.value = false;
+      tempOpacity.value =
+        (120 - value.scrollTop) / 100 > 0.1 ? (120 - value.scrollTop) / 100 : 0;
+      if (value.isFixed) {
+        weather24hTop.value = "80px";
       } else {
-        isShowTemp.value = true;
+        weather24hTop.value = "";
       }
+    }
+    function scrollWeather24(value: { scrollTop: number; isFixed: boolean }) {
+      //
     }
     onMounted(() => {
       geolocation()
@@ -238,7 +249,10 @@ export default defineComponent({
       state,
       getWeatherUrl,
       scrollTop,
-      isShowTemp
+      isShowTemp,
+      tempOpacity,
+      weather24hTop,
+      scrollWeather24
     };
   }
 });
@@ -267,10 +281,16 @@ export default defineComponent({
       font-weight: 200;
     }
   }
+  & .scroll-box {
+    overflow: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
   & .weather24h {
     height: 120px;
     width: 100vw;
     border-top: 1px solid rgb(248 249 253 / 0.4);
+    border-bottom: 1px solid rgb(248 249 253 / 0.4);
     overflow: hidden;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -318,7 +338,6 @@ export default defineComponent({
   }
   & .weather7d {
     padding: 16px 16px;
-    border-top: 1px solid rgb(248 249 253 / 0.4);
     border-bottom: 1px solid rgb(248 249 253 / 0.4);
     & .weather7d-detail {
       opacity: 0.9;
