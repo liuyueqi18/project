@@ -1,7 +1,7 @@
 <template>
   <div class="weather">
     <div class="top">
-      <van-sticky @scroll="scrollTop">
+      <van-sticky @scroll="handlerScrollTop">
         <p class="address">{{ state.city.name }}</p>
         <p class="text">{{ state.cityWeatherNow.text }}</p>
       </van-sticky>
@@ -11,7 +11,10 @@
         </p>
       </transition>
     </div>
-    <van-sticky :offset-top="weather24hTop" @scroll="scrollWeather24">
+    <van-sticky
+      :offset-top="weather24hTopDistance"
+      @scroll="handlerScrollWeather24"
+    >
       <div class="weather24h">
         <div class="weather24h-warp">
           <div
@@ -31,55 +34,59 @@
         </div>
       </div>
     </van-sticky>
-    <div class="weather7d">
-      <div
-        class="weather7d-detail"
-        v-for="(item, i) in state.cityWeather7d"
-        :key="i"
-      >
-        <span>{{ item.week }}</span>
-        <div class="weather7d-icon-box">
-          <img class="weather7d-icon" :src="getWeatherUrl(item.iconDay)" />
-        </div>
-        <div class="weather7d-temp">
-          <span style="text-align:right;">{{ item.tempMax }}</span>
-          <span style="text-align:right;">{{ item.tempMin }}</span>
-        </div>
-      </div>
-    </div>
-    <div class="detail">
-      <div class="detail_box">
-        <span class="label">云量</span>
-        <span class="value">{{ state.cityWeatherNow.cloud || "0" }}%</span>
-      </div>
-      <div class="detail_box">
-        <span class="label">降水量</span>
-        <span class="value">{{ state.cityWeatherNow.precip || "0" }}毫米</span>
-      </div>
-      <div class="detail_box">
-        <span class="label">相对湿度</span>
-        <span class="value">{{ state.cityWeatherNow.humidity || "0" }}%</span>
-      </div>
-      <div class="detail_box">
-        <span class="label">风</span>
-        <span class="value"
-          >{{ state.cityWeatherNow.windDir || "0" }}
-          {{ state.cityWeatherNow.windScale || "0" }}级
-          {{ state.cityWeatherNow.windSpeed || "0" }}公里/小时</span
+    <div class="bottom-box">
+      <div class="weather7d">
+        <div
+          class="weather7d-detail"
+          v-for="(item, i) in state.cityWeather7d"
+          :key="i"
         >
+          <span>{{ item.week }}</span>
+          <div class="weather7d-icon-box">
+            <img class="weather7d-icon" :src="getWeatherUrl(item.iconDay)" />
+          </div>
+          <div class="weather7d-temp">
+            <span style="text-align:right;">{{ item.tempMax }}</span>
+            <span style="text-align:right;">{{ item.tempMin }}</span>
+          </div>
+        </div>
       </div>
-      <div class="detail_box">
-        <span class="label">体感温度</span>
-        <span class="value">{{ state.cityWeatherNow.feelsLike || "0" }}</span>
+      <div class="detail">
+        <div class="detail_box">
+          <span class="label">云量</span>
+          <span class="value">{{ state.cityWeatherNow.cloud || "0" }}%</span>
+        </div>
+        <div class="detail_box">
+          <span class="label">降水量</span>
+          <span class="value"
+            >{{ state.cityWeatherNow.precip || "0" }}毫米</span
+          >
+        </div>
+        <div class="detail_box">
+          <span class="label">相对湿度</span>
+          <span class="value">{{ state.cityWeatherNow.humidity || "0" }}%</span>
+        </div>
+        <div class="detail_box">
+          <span class="label">风</span>
+          <span class="value"
+            >{{ state.cityWeatherNow.windDir || "0" }}
+            {{ state.cityWeatherNow.windScale || "0" }}级
+            {{ state.cityWeatherNow.windSpeed || "0" }}公里/小时</span
+          >
+        </div>
+        <div class="detail_box">
+          <span class="label">体感温度</span>
+          <span class="value">{{ state.cityWeatherNow.feelsLike || "0" }}</span>
+        </div>
+        <div class="detail_box">
+          <span class="label">气压</span>
+          <span class="value"
+            >{{ state.cityWeatherNow.pressure || "0" }}百帕</span
+          >
+        </div>
       </div>
-      <div class="detail_box">
-        <span class="label">气压</span>
-        <span class="value"
-          >{{ state.cityWeatherNow.pressure || "0" }}百帕</span
-        >
-      </div>
+      <div class="division"></div>
     </div>
-    <div class="division"></div>
 
     <div class="map" id="map"></div>
   </div>
@@ -164,9 +171,27 @@ export default defineComponent({
     });
     let adcode = "";
     const mapObj = new AMap.Map("map");
-    const isShowTemp = ref(true);
-    const tempOpacity = ref(1);
-    const weather24hTop = ref("");
+    const tempOpacity = ref(1); // 透明度
+    const weather24hTopDistance = ref(""); //
+    const isFixedWeather24 = ref(false);
+    function handlerScrollTop(value: { scrollTop: number; isFixed: boolean }) {
+      tempOpacity.value =
+        (120 - value.scrollTop) / 100 > 0.1 ? (120 - value.scrollTop) / 100 : 0;
+      if (value.isFixed) {
+        weather24hTopDistance.value = "80px";
+      } else {
+        weather24hTopDistance.value = "";
+      }
+    }
+    function handlerScrollWeather24(value: {
+      scrollTop: number;
+      isFixed: boolean;
+    }) {
+      if (value.isFixed) {
+        isFixedWeather24.value = true;
+      }
+      console.log("isFixedWeather24 :>> ", isFixedWeather24.value);
+    }
     function geolocation() {
       return new Promise((resolve, reject) => {
         mapObj.plugin("AMap.Geolocation", function() {
@@ -200,7 +225,6 @@ export default defineComponent({
     function getCityWeatherById(id: string) {
       getCityWeatherNow({ location: id }).then(res => {
         state.cityWeatherNow = res;
-        console.log("res :>> ", state.cityWeatherNow);
       });
       getCityWeather7d({ location: id }).then(res => {
         state.cityWeather7d = res.daily;
@@ -223,18 +247,6 @@ export default defineComponent({
       return (iconUrl as any)[`./heweather-icon-S1-source_${status}.png`];
     }
 
-    function scrollTop(value: { scrollTop: number; isFixed: boolean }) {
-      tempOpacity.value =
-        (120 - value.scrollTop) / 100 > 0.1 ? (120 - value.scrollTop) / 100 : 0;
-      if (value.isFixed) {
-        weather24hTop.value = "80px";
-      } else {
-        weather24hTop.value = "";
-      }
-    }
-    function scrollWeather24(value: { scrollTop: number; isFixed: boolean }) {
-      //
-    }
     onMounted(() => {
       geolocation()
         .then(() => {
@@ -248,21 +260,24 @@ export default defineComponent({
     return {
       state,
       getWeatherUrl,
-      scrollTop,
-      isShowTemp,
-      tempOpacity,
-      weather24hTop,
-      scrollWeather24
+      handlerScrollTop,
+      tempOpacity, // 透明度
+      weather24hTopDistance, // 距离顶部距离
+      handlerScrollWeather24,
+      isFixedWeather24
     };
   }
 });
 </script>
 <style scoped lang="postcss">
 .weather {
-  background: #75a4c7;
-  min-height: 100vh;
+  /* background: #75a4c7; */
   font-size: 18px;
   padding-bottom: 10vh;
+  background: url("../../assets/test.jpeg");
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  background-repeat: no-repeat;
   & .top {
     margin: 0 auto;
     color: #f8f9fd;
@@ -281,10 +296,7 @@ export default defineComponent({
       font-weight: 200;
     }
   }
-  & .scroll-box {
-    overflow: hidden;
-    overflow-x: scroll;
-    overflow-y: hidden;
+  & .bottom-box {
   }
   & .weather24h {
     height: 120px;
