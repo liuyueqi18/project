@@ -2,8 +2,14 @@
   <div class="weather">
     <div class="top">
       <van-sticky @scroll="handlerScrollTop">
-        <p class="address">{{ state.city.name }}</p>
-        <p class="text">{{ state.cityWeatherNow.text }}</p>
+        <div style="background: #75a4c7; height:90px">
+          <p class="address">
+            {{ state.city.name }}
+          </p>
+          <p class="text">
+            {{ state.cityWeatherNow.text }}
+          </p>
+        </div>
       </van-sticky>
       <transition name="van-fade">
         <p class="temp" :style="{ opacity: tempOpacity }">
@@ -11,10 +17,7 @@
         </p>
       </transition>
     </div>
-    <van-sticky
-      :offset-top="weather24hTopDistance"
-      @scroll="handlerScrollWeather24"
-    >
+    <van-sticky offset-top="90px">
       <div class="weather24h">
         <div class="weather24h-warp">
           <div
@@ -172,25 +175,9 @@ export default defineComponent({
     let adcode = "";
     const mapObj = new AMap.Map("map");
     const tempOpacity = ref(1); // 透明度
-    const weather24hTopDistance = ref(""); //
-    const isFixedWeather24 = ref(false);
     function handlerScrollTop(value: { scrollTop: number; isFixed: boolean }) {
       tempOpacity.value =
         (120 - value.scrollTop) / 100 > 0.1 ? (120 - value.scrollTop) / 100 : 0;
-      if (value.isFixed) {
-        weather24hTopDistance.value = "80px";
-      } else {
-        weather24hTopDistance.value = "";
-      }
-    }
-    function handlerScrollWeather24(value: {
-      scrollTop: number;
-      isFixed: boolean;
-    }) {
-      if (value.isFixed) {
-        isFixedWeather24.value = true;
-      }
-      console.log("isFixedWeather24 :>> ", isFixedWeather24.value);
     }
     function geolocation() {
       return new Promise((resolve, reject) => {
@@ -246,7 +233,6 @@ export default defineComponent({
     function getWeatherUrl(status: string) {
       return (iconUrl as any)[`./heweather-icon-S1-source_${status}.png`];
     }
-
     onMounted(() => {
       geolocation()
         .then(() => {
@@ -261,29 +247,27 @@ export default defineComponent({
       state,
       getWeatherUrl,
       handlerScrollTop,
-      tempOpacity, // 透明度
-      weather24hTopDistance, // 距离顶部距离
-      handlerScrollWeather24,
-      isFixedWeather24
+      tempOpacity // 透明度
     };
   }
 });
 </script>
 <style scoped lang="postcss">
 .weather {
-  /* background: #75a4c7; */
+  background: #75a4c7;
   font-size: 18px;
   padding-bottom: 10vh;
-  background: url("../../assets/test.jpeg");
+  /* background: url("../../assets/test.jpeg");
   background-attachment: fixed;
   background-size: 100vw 100vh;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
   & .top {
     margin: 0 auto;
     color: #f8f9fd;
     padding-top: 60px;
     text-align: center;
     padding-bottom: 20px;
+    background: #75a4c7;
     & .address {
       font-size: 34px;
       font-weight: 300;
@@ -296,9 +280,8 @@ export default defineComponent({
       font-weight: 200;
     }
   }
-  & .bottom-box {
-  }
   & .weather24h {
+    background: #75a4c7;
     height: 120px;
     width: 100vw;
     border-top: 1px solid rgb(248 249 253 / 0.4);
@@ -348,56 +331,58 @@ export default defineComponent({
       margin-right: 0;
     }
   }
-  & .weather7d {
-    padding: 16px 16px;
-    border-bottom: 1px solid rgb(248 249 253 / 0.4);
-    & .weather7d-detail {
-      opacity: 0.9;
-      color: #f8f9fd;
-      display: flex;
-      justify-content: space-between;
-      padding: 1px 0;
-      & .weather7d-temp {
-        display: flex;
-        & span {
-          text-align: right;
-          min-width: 30px;
-        }
-      }
-      & .weather7d-temp span:last-of-type {
-        margin-left: 10px;
-      }
-      & .weather7d-icon-box {
-        min-width: 24px;
-        text-align: left;
-        & .weather7d-icon {
-          width: 22px;
-          height: 22px;
-        }
-      }
-    }
-  }
-  & .detail {
-    color: #f8f9fd;
-    padding: 0 16px;
-    & .detail_box {
-      padding: 7px 0px 9px 0px;
+  & .bottom-box {
+    & .weather7d {
+      padding: 16px 16px;
       border-bottom: 1px solid rgb(248 249 253 / 0.4);
-      & .label {
-        font-size: 13px;
-        display: block;
-        opacity: 0.7;
-      }
-      & .value {
-        font-size: 20px;
+      & .weather7d-detail {
+        opacity: 0.9;
+        color: #f8f9fd;
+        display: flex;
+        justify-content: space-between;
+        padding: 1px 0;
+        & .weather7d-temp {
+          display: flex;
+          & span {
+            text-align: right;
+            min-width: 30px;
+          }
+        }
+        & .weather7d-temp span:last-of-type {
+          margin-left: 10px;
+        }
+        & .weather7d-icon-box {
+          min-width: 24px;
+          text-align: left;
+          & .weather7d-icon {
+            width: 22px;
+            height: 22px;
+          }
+        }
       }
     }
-  }
-  & .detail .detail_box:last-of-type {
-    border-bottom: 0;
-  }
-  & .division {
-    border-bottom: 1px solid rgb(248 249 253 / 0.4);
+    & .detail {
+      color: #f8f9fd;
+      padding: 0 16px;
+      & .detail_box {
+        padding: 7px 0px 9px 0px;
+        border-bottom: 1px solid rgb(248 249 253 / 0.4);
+        & .label {
+          font-size: 13px;
+          display: block;
+          opacity: 0.7;
+        }
+        & .value {
+          font-size: 20px;
+        }
+      }
+    }
+    & .detail .detail_box:last-of-type {
+      border-bottom: 0;
+    }
+    & .division {
+      border-bottom: 1px solid rgb(248 249 253 / 0.4);
+    }
   }
   & .map {
     width: 0;
