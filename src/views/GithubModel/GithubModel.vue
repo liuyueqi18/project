@@ -157,37 +157,35 @@ export default defineComponent({
 </script>
 <style scoped lang="postcss">
 .github-model {
-  min-height: 100vh;
+  @apply min-h-screen;
   background: #f3f6fc;
   margin-bottom: 44px;
   & .git-list {
+    @apply bg-white;
     margin: 10px 16px 0 16px;
     padding: 8px 16px;
-    background: #fff;
     border-radius: 8px;
     & .git-info {
       & .title {
-        display: block;
-        padding-bottom: 4px;
+        @apply block;
         color: #0366d6;
+        padding-bottom: 4px;
       }
       & .git-content {
         color: #8d939e;
         font-size: 12px;
         padding-bottom: 4px;
         & span {
-          display: block;
+          @apply block;
         }
       }
       & .git-btm {
-        display: flex;
-        align-items: center;
+        @apply flex items-center;
         color: #8d939e;
         font-size: 12px;
         & .git-btm-info {
           margin-right: 6px;
-          display: flex;
-          align-items: center;
+          @apply flex items-center;
           & .icon {
             color: #8d939e;
             font-size: 10px;
@@ -202,16 +200,9 @@ export default defineComponent({
     }
   }
   & .btm {
-    position: fixed;
-    bottom: 0;
+    @apply fixed bottom-0 w-full bg-white box-border flex items-center justify-between;
     height: 44px;
-    width: 100%;
-    background: #fff;
     padding: 0 16px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     & span {
       color: #8d939e;
       font-size: 12px;

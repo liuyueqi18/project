@@ -262,12 +262,12 @@ export default defineComponent({
   background-size: 100vw 100vh;
   background-repeat: no-repeat; */
   & .top {
-    margin: 0 auto;
-    color: #f8f9fd;
-    padding-top: 60px;
-    text-align: center;
-    padding-bottom: 20px;
+    @apply text-center;
     background: #75a4c7;
+    color: #f8f9fd;
+    margin: 0 auto;
+    padding-top: 60px;
+    padding-bottom: 20px;
     & .address {
       font-size: 34px;
       font-weight: 300;
@@ -281,35 +281,28 @@ export default defineComponent({
     }
   }
   & .weather24h {
+    @apply w-screen overflow-hidden overflow-x-scroll overflow-y-hidden;
     background: #75a4c7;
+    color: #f8f9fd;
     height: 120px;
-    width: 100vw;
+    padding: 10px 0;
     border-top: 1px solid rgb(248 249 253 / 0.4);
     border-bottom: 1px solid rgb(248 249 253 / 0.4);
-    overflow: hidden;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    color: #f8f9fd;
-    padding: 10px 0;
     & .weather24h-warp {
-      display: flex;
+      @apply flex overflow-x-scroll overflow-y-hidden;
       height: 140px;
-      overflow-x: scroll;
-      overflow-y: hidden;
       & .weather24h-warp-li {
+        @apply flex flex-col items-center;
         margin: 0 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         & span {
           white-space: nowrap;
         }
         & .weather24h-pop {
           color: #94ccec;
-          margin-top: 5px;
-          margin-bottom: 3px;
           height: 14px;
           font-size: 14px;
+          margin-top: 5px;
+          margin-bottom: 3px;
         }
         & .weather24h-icon-box {
           width: 22px;
@@ -336,15 +329,14 @@ export default defineComponent({
       padding: 16px 16px;
       border-bottom: 1px solid rgb(248 249 253 / 0.4);
       & .weather7d-detail {
+        @apply flex justify-between;
         opacity: 0.9;
         color: #f8f9fd;
-        display: flex;
-        justify-content: space-between;
         padding: 1px 0;
         & .weather7d-temp {
-          display: flex;
+          @apply flex;
           & span {
-            text-align: right;
+            @apply text-right;
             min-width: 30px;
           }
         }
@@ -352,8 +344,8 @@ export default defineComponent({
           margin-left: 10px;
         }
         & .weather7d-icon-box {
+          @apply text-left;
           min-width: 24px;
-          text-align: left;
           & .weather7d-icon {
             width: 22px;
             height: 22px;
@@ -368,6 +360,7 @@ export default defineComponent({
         padding: 7px 0px 9px 0px;
         border-bottom: 1px solid rgb(248 249 253 / 0.4);
         & .label {
+          @apply block;
           font-size: 13px;
           display: block;
           opacity: 0.7;

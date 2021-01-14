@@ -255,50 +255,43 @@ export default defineComponent({
 
 <style scoped lang="postcss">
 .customer {
-  min-height: 100vh;
+  @apply min-h-screen;
   background: #f3f6fc;
   & >>> .van-search__action {
-    padding: 0;
+    @apply p-0;
   }
   & .search-right {
-    display: flex;
-    align-items: center;
+    @apply flex items-center bg-white;
     color: #4e80ef;
     padding: 0 12px 0 8px;
-    background: #fff;
     & div {
       margin-left: 5px;
     }
   }
   & .cust_info {
+    @apply bg-white;
     margin: 8px;
     padding: 10px 16px;
-    background: #fff;
     border-radius: 8px;
     & .top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      @apply flex items-center justify-between;
       padding-bottom: 8px;
       margin-bottom: 8px;
       border-bottom: 1px solid #f3f6fc;
       & .left {
-        display: flex;
-        align-items: center;
+        @apply flex items-center;
         font-size: 14px;
         & .name {
           margin-right: 8px;
         }
         & .phone {
-          font-size: 14px;
           color: #8d939e;
         }
       }
       & .right {
+        @apply flex items-center;
         font-size: 17px;
-        display: flex;
         height: 16px;
-        align-items: center;
         & .cust_star {
           margin-right: 5px;
         }
@@ -309,9 +302,8 @@ export default defineComponent({
     }
     & .content {
       & .info {
-        display: flex;
+        @apply flex items-center;
         font-size: 14px;
-        align-items: flex-start;
         margin-bottom: 1px;
         & p {
           color: #4d5464;

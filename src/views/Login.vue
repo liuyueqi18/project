@@ -199,37 +199,29 @@ export default defineComponent({
     padding: 0 16px;
     margin-top: 100px;
     & .logo {
-      margin: 0 auto;
-      display: block;
+      @apply block;
       width: 80px;
+      margin: 0 auto;
       margin-bottom: 30px;
     }
     & .button {
       padding: 16px;
       & .tag_box {
-        display: flex;
-        justify-content: flex-end;
+        @apply flex justify-end;
         & .tag {
           color: #1989fa;
-          margin: 4px 0;
           font-size: 12px;
+          margin: 4px 0;
           margin-left: 10px;
         }
       }
     }
   }
   & .overlay_loading {
+    @apply absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center;
     width: 100px;
     height: 100px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     margin: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 </style>

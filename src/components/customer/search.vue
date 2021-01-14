@@ -74,19 +74,14 @@ export default defineComponent({
 </script>
 <style scoped lang="postcss">
 .search {
-  width: 100%;
+  @apply w-full;
   & .btn-btm {
-    position: fixed;
+    @apply fixed flex w-full items-center bottom-0;
     height: 44px;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    bottom: 0;
     border-top: 1px solid #f3f6fc;
     & .btn {
+      @apply w-1/2 text-center;
       line-height: 44px;
-      width: 50%;
-      text-align: center;
     }
     & .submit {
       background: #4e80ef;

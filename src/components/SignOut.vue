@@ -98,38 +98,31 @@ export default defineComponent({
 <style scoped lang="postcss">
 .sign_out {
   & .sign_button {
+    @apply text-center flex items-center justify-center fixed;
+    background: #325888;
+    color: #f3f6fc;
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 50px;
-    color: #f3f6fc;
-    display: flex;
-    bottom: 30px;
-    right: 30px;
-    background: #325888;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    position: fixed;
     bottom: 60px;
     right: 30px;
+    font-size: 30px;
+    line-height: 50px;
+    border-radius: 50%;
     z-index: 9999;
   }
   & .user_dialog {
-    position: fixed;
+    @apply fixed;
     bottom: 130px;
     right: 30px;
     & .user_select {
+      @apply text-center;
+      background: #325888;
+      color: #f3f6fc;
       width: 60px;
       height: 60px;
-      border-radius: 50%;
-      background: #325888;
-      line-height: 60px;
-      text-align: center;
-      color: #f3f6fc;
       margin-top: 10px;
+      line-height: 60px;
+      border-radius: 50%;
     }
   }
 }

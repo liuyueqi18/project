@@ -60,13 +60,13 @@ export default defineComponent({
   @extend %flex_start;
   padding: 20px 16px;
   .clild {
+    background: #eee;
     width: 80px;
     height: 80px;
-    border-radius: 50%;
-    background: #eee;
     line-height: 80px;
-    text-align: center;
     margin-right: 10px;
+    border-radius: 50%;
+    text-align: center;
   }
 }
 </style>
