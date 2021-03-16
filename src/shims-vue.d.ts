@@ -6,3 +6,4 @@ declare module '*.vue' {
 declare module "*.js"
 declare module 'AMap'
 
+declare module 'swiper/vue'

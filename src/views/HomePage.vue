@@ -39,6 +39,10 @@ export default defineComponent({
         {
           name: "天气",
           nameUrl: "Weather"
+        },
+        {
+          name: "画板",
+          nameUrl: "Draw"
         }
       ]
     });
@@ -57,14 +61,16 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "@/style/main.scss";
 .home_page {
-  @extend %flex_start;
   padding: 20px 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   .clild {
     background: #eee;
-    width: 80px;
-    height: 80px;
-    line-height: 80px;
-    margin-right: 10px;
+    width: 25vw;
+    height: 25vw;
+    line-height: 25vw;
+    margin-bottom: 10px;
     border-radius: 50%;
     text-align: center;
   }

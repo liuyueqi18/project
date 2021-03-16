@@ -33,6 +33,7 @@ import { CustomerQueryVO } from "@/views/Customer/types";
 import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({
+  emits: ["clearSearch", "submitSearch"],
   setup(props, ctx) {
     const searchInfo = reactive<CustomerQueryVO>({
       custName: "",

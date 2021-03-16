@@ -2,6 +2,7 @@ import {
   createRouter,
   createWebHashHistory,
   createWebHistory,
+  RouteLocationNormalized,
   RouteRecordRaw
 } from "vue-router";
 
@@ -75,6 +76,15 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "weather" */ "../views/Weather/Weather.vue")
   },
   {
+    path: "/draw",
+    name: "Draw",
+    meta: {
+      title: "画板"
+    },
+    component: () =>
+      import(/* webpackChunkName: "draw" */ "../views/Draw/Draw.vue")
+  },
+  {
     path: "/user",
     name: "User",
     meta: {
@@ -90,23 +100,25 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
-  const routerList: Array<string> = [];
-  (document as any).title = to.meta.title || "任意门";
-  if (routerList.indexOf(to.name as any) >= 0) {
-    next();
-    return;
-  } else {
-    if (to.name === "Login") {
+router.beforeEach(
+  (to: RouteLocationNormalized, from: RouteLocationNormalized, next) => {
+    const routerList: Array<string> = ["Draw"];
+    (document as Document).title = to.meta.title || "任意门";
+    if (routerList.indexOf(to?.name as string) >= 0) {
       next();
       return;
-    }
-    if (localStorage.getItem("rym_user_id")) {
-      next();
     } else {
-      next({ name: "Login" });
+      if (to.name === "Login") {
+        next();
+        return;
+      }
+      if (localStorage.getItem("rym_user_id")) {
+        next();
+      } else {
+        next({ name: "Login" });
+      }
     }
   }
-});
+);
 
 export default router;
