@@ -1,7 +1,6 @@
 import {
   createRouter,
   createWebHashHistory,
-  createWebHistory,
   RouteLocationNormalized,
   RouteRecordRaw
 } from "vue-router";
@@ -85,6 +84,15 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "draw" */ "../views/Draw/Draw.vue")
   },
   {
+    path: "/loan",
+    name: "Loan",
+    meta: {
+      title: "贷款计算"
+    },
+    component: () =>
+      import(/* webpackChunkName: "loan" */ "../views/Loan/Loan.vue")
+  },
+  {
     path: "/user",
     name: "User",
     meta: {
@@ -102,7 +110,7 @@ const router = createRouter({
 
 router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next) => {
-    const routerList: Array<string> = ["Draw"];
+    const routerList: Array<string> = ["Draw", "Loan"];
     (document as Document).title = to.meta.title || "任意门";
     if (routerList.indexOf(to?.name as string) >= 0) {
       next();

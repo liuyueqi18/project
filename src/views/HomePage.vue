@@ -43,6 +43,10 @@ export default defineComponent({
         {
           name: "画板",
           nameUrl: "Draw"
+        },
+        {
+          name: "贷款计算",
+          nameUrl: "Loan"
         }
       ]
     });
