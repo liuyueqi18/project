@@ -48,54 +48,61 @@
         <van-button type="primary" block @click="handlerLoan">计算</van-button>
       </div>
     </div>
-    <div class="tabel-box" v-if="loanForm.mode === '1'">
-      <table class="table" border="1">
-        <tr>
-          <th>期数</th>
-          <th>每月还款</th>
-          <th>偿还利息</th>
-          <th>偿还本金</th>
-          <th>剩余本金</th>
-          <th>已还本金</th>
-          <th>已还利息</th>
+    <div
+      class="tabel-box"
+      v-if="loanForm.mode === '2' && state.mouthArray.length"
+    >
+      <table class="table">
+        <tr class="tabel-tr">
+          <th class="tabel-th">期数</th>
+          <th class="tabel-th">每月还款</th>
+          <th class="tabel-th">偿还利息</th>
+          <th class="tabel-th">偿还本金</th>
+          <th class="tabel-th">剩余本金</th>
+          <th class="tabel-th">已还本金</th>
+          <th class="tabel-th">已还利息</th>
         </tr>
-        <tr v-for="(item, i) in state.mouthArray" :key="i">
-          <td>第{{ i + 1 }}期</td>
-          <td>{{ state.mortgageLoan }}</td>
-          <td>{{ item.monthInterest }}</td>
-          <td>{{ item.monthPrincipal }}</td>
-          <td>{{ item.surplusTotal }}</td>
-          <td>{{ item.beforePrincipalTotal }}</td>
-          <td>{{ item.beforeInterestTotal }}</td>
+        <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
+          <td class="tabel-td">第{{ i + 1 }}期</td>
+          <td class="tabel-td">{{ state.mortgageLoan }}</td>
+          <td class="tabel-td">{{ item.monthInterest }}</td>
+          <td class="tabel-td">{{ item.monthPrincipal }}</td>
+          <td class="tabel-td">{{ item.surplusTotal }}</td>
+          <td class="tabel-td">{{ item.beforePrincipalTotal }}</td>
+          <td class="tabel-td">{{ item.beforeInterestTotal }}</td>
         </tr>
       </table>
     </div>
     <div class="tabel-box">
-      <table class="table" border="1" v-if="loanForm.mode === '2'">
-        <tr>
-          <th>期数</th>
-          <th>每月还款</th>
-          <th>偿还利息</th>
-          <th>偿还本金</th>
-          <th>剩余本金</th>
-          <th>已还本金</th>
-          <th>已还利息</th>
+      <table
+        class="table"
+        v-if="loanForm.mode === '1' && state.mouthArray.length"
+      >
+        <tr class="tabel-tr">
+          <th class="tabel-th">期数</th>
+          <th class="tabel-th">每月还款</th>
+          <th class="tabel-th">偿还利息</th>
+          <th class="tabel-th">偿还本金</th>
+          <th class="tabel-th">剩余本金</th>
+          <th class="tabel-th">已还本金</th>
+          <th class="tabel-th">已还利息</th>
         </tr>
-        <tr v-for="(item, i) in state.mouthArray" :key="i">
-          <td>第{{ i + 1 }}期</td>
-          <td>{{ item.mouthFixedBasisMortgage }}</td>
-          <td>{{ item.monthInterest }}</td>
-          <td>{{ item.monthPrincipal }}</td>
-          <td>{{ item.surplusTotal }}</td>
-          <td>{{ item.beforePrincipalTotal }}</td>
-          <td>{{ item.beforeInterestTotal }}</td>
+        <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
+          <td class="tabel-td">第{{ i + 1 }}期</td>
+          <td class="tabel-td">{{ item.mouthFixedBasisMortgage }}</td>
+          <td class="tabel-td">{{ item.monthInterest }}</td>
+          <td class="tabel-td">{{ item.monthPrincipal }}</td>
+          <td class="tabel-td">{{ item.surplusTotal }}</td>
+          <td class="tabel-td">{{ item.beforePrincipalTotal }}</td>
+          <td class="tabel-td">{{ item.beforeInterestTotal }}</td>
         </tr>
       </table>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { Toast } from "vant";
+import { defineComponent, reactive, ref, watch } from "vue";
 import { FixedBasisMortgage, FixedPaymentMortgage } from "./api";
 export default defineComponent({
   setup() {
@@ -105,10 +112,10 @@ export default defineComponent({
       ? T
       : never;
     const loanForm = reactive({
-      money: "50",
+      money: "",
       mode: "1",
-      year: "10",
-      rate: "5.19"
+      year: "",
+      rate: ""
     });
     const state = ref<ResultT>({
       mortgageLoan: 0,
@@ -116,9 +123,20 @@ export default defineComponent({
       totalRepayment: 0,
       mouthArray: []
     });
-
+    watch(loanForm, (o, n) => {
+      state.value = {
+        mortgageLoan: 0,
+        grossInterest: 0,
+        totalRepayment: 0,
+        mouthArray: []
+      };
+    });
     function handlerLoan() {
-      if (loanForm.mode === "1") {
+      if (!loanForm.money || !loanForm.year || !loanForm.rate) {
+        Toast("请填写完成计算");
+        return;
+      }
+      if (loanForm.mode === "2") {
         FixedPaymentMortgage(
           Number(loanForm.money) * 10000,
           Number(loanForm.year),
@@ -126,7 +144,7 @@ export default defineComponent({
         ).then(res => {
           state.value = res;
         });
-      } else if (loanForm.mode === "2") {
+      } else if (loanForm.mode === "1") {
         FixedBasisMortgage(
           Number(loanForm.money) * 10000,
           Number(loanForm.year),
@@ -147,6 +165,8 @@ export default defineComponent({
 
 <style lang="postcss" scoped>
 .loan-class {
+  font-size: 12px;
+  color: #4d5464;
   & .top-content {
     background: #fff;
   }
@@ -154,29 +174,27 @@ export default defineComponent({
     padding: 16px;
   }
   & .tabel-box {
-    font-size: 14px;
+    white-space: nowrap;
     box-sizing: border-box;
     max-width: 343px;
     overflow: scroll;
     margin: 0 auto;
+    border: none;
     & .table {
       width: 100%;
+      border: none;
+      border-collapse: collapse;
+      border-spacing: 0;
       & .tabel-tr {
         width: 100%;
-        & .name {
-          text-align: left;
-        }
-        & .value {
-          text-align: right;
-        }
         & .tabel-th {
+          background: rgba(78, 128, 239, 0.1);
           border: 1px solid #e4e7ed;
-          padding: 6px 12px;
-          width: 50%;
         }
-        & .title {
-          text-align: left;
-          background: #e4e7ed;
+        & td {
+          padding: 4px;
+          text-align: center;
+          border: 1px solid #e4e7ed;
         }
       }
     }
