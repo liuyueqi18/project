@@ -259,6 +259,7 @@ export default defineComponent({
     overflow: scroll;
     margin: 0 auto;
     border: none;
+    padding-bottom: 40px;
     & .table {
       width: 100%;
       border: none;
