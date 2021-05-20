@@ -98,6 +98,26 @@
         </tr>
       </table>
     </div>
+    <div class="sticky">
+      <div :class="arrowTopStyle">
+        <svg class="icon " aria-hidden="true">
+          <use
+            style="color:#4E80EF;"
+            xlink:href="#icon-zhidingmianxing"
+            @click="handlerMove('top')"
+          ></use>
+        </svg>
+      </div>
+      <div :class="arrowBottomStyle">
+        <svg
+          class="icon bottom"
+          aria-hidden="true"
+          @click="handlerMove('bottom')"
+        >
+          <use style="color:#4E80EF;" xlink:href="#icon-zhidingmianxing"></use>
+        </svg>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -123,6 +143,7 @@ export default defineComponent({
       totalRepayment: 0,
       mouthArray: []
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     watch(loanForm, (o, n) => {
       state.value = {
         mortgageLoan: 0,
@@ -131,6 +152,7 @@ export default defineComponent({
         mouthArray: []
       };
     });
+
     function handlerLoan() {
       if (!loanForm.money || !loanForm.year || !loanForm.rate) {
         Toast("请填写完成计算");
@@ -154,10 +176,59 @@ export default defineComponent({
         });
       }
     }
+    const arrowTopStyle = ref();
+    const arrowBottomStyle = ref();
+    function handlerMove(type: string) {
+      if (type === "top") {
+        const scrollToptimer = setInterval(function() {
+          const top =
+            document.body.scrollTop || document.documentElement.scrollTop;
+          const speed = top / 4;
+          if (document.body.scrollTop != 0) {
+            document.body.scrollTop -= speed;
+          } else {
+            document.documentElement.scrollTop -= speed;
+          }
+          if (top == 0) {
+            clearInterval(scrollToptimer);
+          }
+        }, 30);
+        arrowTopStyle.value = "animate__animated animate__rubberBand";
+        setTimeout(() => {
+          arrowTopStyle.value = "";
+        }, 1000);
+      } else if (type === "bottom") {
+        const scrollButtomtimer = setInterval(function() {
+          const top = document.documentElement.scrollTop;
+          const speed = top / 4;
+          if (speed === 0) {
+            document.documentElement.scrollTop = 150;
+          } else {
+            document.documentElement.scrollTop =
+              document.documentElement.scrollTop + speed;
+          }
+          if (top >= document.body.scrollHeight - window.screen.height) {
+            clearInterval(scrollButtomtimer);
+          }
+        }, 50);
+        arrowBottomStyle.value = "animate__animated animate__rubberBand";
+        setTimeout(() => {
+          arrowBottomStyle.value = "";
+        }, 1000);
+      }
+    }
+    // FixedBasisMortgage(Number(50) * 10000, Number(10), Number(5) / 100).then(
+    //   res => {
+    //     state.value = res;
+    //   }
+    // );
     return {
       loanForm,
       state,
-      handlerLoan
+      handlerLoan,
+      handlerMove,
+      arrowTopStyle,
+      arrowBottomStyle
     };
   }
 });
@@ -167,9 +238,6 @@ export default defineComponent({
 .loan-class {
   font-size: 12px;
   color: #4d5464;
-  & .top-content {
-    background: #fff;
-  }
   & .btn {
     padding: 16px;
   }
@@ -197,6 +265,22 @@ export default defineComponent({
           border: 1px solid #e4e7ed;
         }
       }
+    }
+  }
+  & .sticky {
+    position: fixed;
+    bottom: 15vh;
+    right: 10vw;
+    opacity: 0.8;
+    color: #1989fa;
+
+    & .bottom {
+      transform: rotate(180deg);
+      margin-top: 30px;
+    }
+    & .icon {
+      width: 35px;
+      height: 35px;
     }
   }
 }
