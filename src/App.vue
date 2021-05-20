@@ -39,7 +39,7 @@ export default defineComponent({
 
 <style>
 body {
-  color: #333;
+  color: #4d5464;
   height: 100% !important;
 }
 </style>
@@ -52,6 +52,6 @@ body {
   fill: currentColor;
   /* 继承颜色 */
   overflow: hidden;
-  color: #333;
+  color: #4d5464;
 }
 </style>

@@ -209,7 +209,7 @@ export default defineComponent({
       & .tag_box {
         @apply flex justify-end;
         & .tag {
-          color: #1989fa;
+          color: #4e80ef;
           font-size: 12px;
           margin: 4px 0;
           margin-left: 10px;

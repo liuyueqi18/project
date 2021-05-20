@@ -6,7 +6,7 @@
       :key="i"
       @click="goChildPage(item)"
     >
-      {{ item.name }}
+      <div>{{ item.name }}</div>
     </div>
   </div>
 </template>
@@ -65,18 +65,25 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "@/style/main.scss";
 .home_page {
-  padding: 20px 16px;
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  font-size: 13px;
   .clild {
-    background: #eee;
     width: 25vw;
     height: 25vw;
-    line-height: 25vw;
-    margin-bottom: 10px;
-    border-radius: 50%;
-    text-align: center;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & div {
+      background: #7f8daa;
+      width: 20vw;
+      height: 20vw;
+      line-height: 20vw;
+      border-radius: 50%;
+      text-align: center;
+    }
   }
 }
 </style>
