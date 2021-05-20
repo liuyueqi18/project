@@ -178,9 +178,19 @@ export default defineComponent({
     }
     const arrowTopStyle = ref();
     const arrowBottomStyle = ref();
+    let scrollToptimer: number | undefined;
+    let scrollButtomtimer: number | undefined;
+    const isDc = ref(false);
     function handlerMove(type: string) {
+      isDc.value = true;
+      if (isDc.value) {
+        clearInterval(scrollToptimer);
+        clearInterval(scrollButtomtimer);
+      } else {
+        return;
+      }
       if (type === "top") {
-        const scrollToptimer = setInterval(function() {
+        scrollToptimer = setInterval(function() {
           const top =
             document.body.scrollTop || document.documentElement.scrollTop;
           const speed = top / 4;
@@ -198,7 +208,7 @@ export default defineComponent({
           arrowTopStyle.value = "";
         }, 1000);
       } else if (type === "bottom") {
-        const scrollButtomtimer = setInterval(function() {
+        scrollButtomtimer = setInterval(function() {
           const top = document.documentElement.scrollTop;
           const speed = top / 4;
           if (speed === 0) {
@@ -216,6 +226,7 @@ export default defineComponent({
           arrowBottomStyle.value = "";
         }, 1000);
       }
+      isDc.value = false;
     }
     // FixedBasisMortgage(Number(50) * 10000, Number(10), Number(5) / 100).then(
     //   res => {
