@@ -12,7 +12,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "主页"
     },
-    component: () => import(/* webpackChunkName: "" */ "../views/HomePage.vue")
+    component: () =>
+      import(/* webpackChunkName: "" */ "../modules/HomePage.vue")
   },
   {
     path: "/login",
@@ -21,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "登陆"
     },
     component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Login.vue")
+      import(/* webpackChunkName: "login" */ "../modules/Login.vue")
   },
   {
     path: "/homepage",
@@ -30,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "主页"
     },
     component: () =>
-      import(/* webpackChunkName: "homepage" */ "../views/HomePage.vue")
+      import(/* webpackChunkName: "homepage" */ "../modules/HomePage.vue")
   },
   {
     path: "/customer",
@@ -40,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "customer" */ "../views/Customer/Customer.vue"
+        /* webpackChunkName: "customer" */ "../modules/Customer/Customer.vue"
       )
   },
   {
@@ -51,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "customerinfopage" */ "../views/Customer/CustomerInfoPage.vue"
+        /* webpackChunkName: "customerinfopage" */ "../modules/Customer/CustomerInfoPage.vue"
       )
   },
   {
@@ -62,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "githubmodel" */ "../views/GithubModel/GithubModel.vue"
+        /* webpackChunkName: "githubmodel" */ "../modules/GithubModel/GithubModel.vue"
       )
   },
   {
@@ -72,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "天气"
     },
     component: () =>
-      import(/* webpackChunkName: "weather" */ "../views/Weather/Weather.vue")
+      import(/* webpackChunkName: "weather" */ "../modules/Weather/Weather.vue")
   },
   {
     path: "/draw",
@@ -81,7 +82,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "画板"
     },
     component: () =>
-      import(/* webpackChunkName: "draw" */ "../views/Draw/Draw.vue")
+      import(/* webpackChunkName: "draw" */ "../modules/Draw/Draw.vue")
   },
   {
     path: "/loan",
@@ -90,7 +91,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "贷款计算"
     },
     component: () =>
-      import(/* webpackChunkName: "loan" */ "../views/Loan/Loan.vue")
+      import(/* webpackChunkName: "loan" */ "../modules/Loan/Loan.vue")
   },
   {
     path: "/user",
@@ -99,7 +100,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "个人中心"
     },
     component: () =>
-      import(/* webpackChunkName: "user" */ "../views/User/User.vue")
+      import(/* webpackChunkName: "user" */ "../modules/User/User.vue")
   }
 ];
 

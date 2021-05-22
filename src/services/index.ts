@@ -11,7 +11,7 @@ import {
   CustomerBO,
   CustomerQueryVO,
   CustomerVO
-} from "@/views/Customer/types";
+} from "@/modules/Customer/types";
 
 /**
  * 登录

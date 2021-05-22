@@ -29,7 +29,7 @@
   </div>
 </template>
 <script lang="ts">
-import { CustomerQueryVO } from "@/views/Customer/types";
+import { CustomerQueryVO } from "@/modules/Customer/types";
 import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({

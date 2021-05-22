@@ -1,6 +1,6 @@
 import request from "@/services/git/services";
 
-import { GithubSearchType, GitSearchType } from "@/views/GithubModel/types";
+import { GithubSearchType, GitSearchType } from "@/modules/GithubModel/types";
 import dayjs from "dayjs";
 
 export async function getOrderList(params: GitSearchType) {

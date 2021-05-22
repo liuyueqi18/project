@@ -48,8 +48,13 @@
         label="修改密码"
         input-align="right"
         readonly
-        @click="editPassword()"
-      />
+      >
+        <template #button>
+          <van-button size="small" @click="editPassword()" type="primary"
+            >修改密码</van-button
+          >
+        </template></van-field
+      >
     </van-cell-group>
     <div style="height:15px;"></div>
     <div class="btn_style">

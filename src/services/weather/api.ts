@@ -5,7 +5,7 @@ import {
   CityWeather24h,
   CityWeather7d,
   weekDay
-} from "@/views/Weather/types";
+} from "@/modules/Weather/types";
 import dayjs from "dayjs";
 import { Toast } from "vant";
 

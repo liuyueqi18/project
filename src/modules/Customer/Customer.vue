@@ -101,7 +101,7 @@ import { delCustomer, followCustomer, getCustomerListById } from "@/services";
 import { Dialog } from "vant";
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { CustomerBO, CustomerQueryVO } from "@/views/Customer/types";
+import { CustomerBO, CustomerQueryVO } from "@/modules/Customer/types";
 import SearchModel from "@/components/Customer/Search.vue";
 type Props = {
   //
