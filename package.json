@@ -6,7 +6,7 @@
     "start": "vue-cli-service serve",
     "prod": "vue-cli-service build --mode prod",
     "stage": "vue-cli-service build --mode stage",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --modern",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "webpack": "webpack --version"
