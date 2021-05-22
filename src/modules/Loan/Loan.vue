@@ -180,7 +180,8 @@ export default defineComponent({
         time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
         money: `${Number(loanForm.money)}万`,
         year: `${Number(loanForm.year)}年`,
-        rate: `${Number(loanForm.rate)}%`
+        rate: `${Number(loanForm.rate)}%`,
+        mode: loanForm.mode === "1" ? "本金" : "本息"
       };
       setPageTrack(params);
     }

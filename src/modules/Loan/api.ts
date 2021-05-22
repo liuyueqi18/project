@@ -136,6 +136,7 @@ type TrackVO = {
   year: string;
   money: string;
   rate: string;
+  mode: string;
 };
 /**
  * track
