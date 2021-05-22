@@ -1,3 +1,12 @@
+import AV from "leancloud-storage";
+import { Toast } from "vant";
+
+AV.init({
+  appId: "Q8A65T5W8qkMkbWI17g7vAu0-gzGzoHsz",
+  appKey: "JXUCxIYpDrIF87LVpYlK9egD",
+  serverURL: "https://server.lyq168.cn"
+});
+
 // 等额本息, Fixed-Payment Mortgage
 // 等额本金, Fixed-Basis Mortgage
 //
@@ -119,5 +128,30 @@ export function FixedBasisMortgage(money: number, year: number, rate: number) {
       });
     }
     resolve({ grossInterest, totalRepayment, mouthArray });
+  });
+}
+
+type TrackVO = {
+  time: string;
+  year: string;
+  money: string;
+  rate: string;
+};
+export function setPageTrack(params: TrackVO) {
+  return new Promise((resolve, reject) => {
+    const Track = AV.Object.extend("Track");
+    const track = new Track();
+    for (const i in params) {
+      track.set(i, params[i as keyof TrackVO]);
+    }
+    track
+      .save()
+      .then(res => {
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+        Toast(error.rawMessage);
+      });
   });
 }

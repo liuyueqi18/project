@@ -121,9 +121,10 @@
   </div>
 </template>
 <script lang="ts">
+import dayjs from "dayjs";
 import { Toast } from "vant";
-import { defineComponent, reactive, ref, watch } from "vue";
-import { FixedBasisMortgage, FixedPaymentMortgage } from "./api";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { FixedBasisMortgage, FixedPaymentMortgage, setPageTrack } from "./api";
 export default defineComponent({
   setup() {
     type ResultT = ReturnType<typeof FixedPaymentMortgage> extends Promise<
@@ -175,6 +176,13 @@ export default defineComponent({
           state.value = res;
         });
       }
+      const params = {
+        time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+        money: `${Number(loanForm.money)}万`,
+        year: `${Number(loanForm.year)}年`,
+        rate: `${Number(loanForm.rate)}%`
+      };
+      setPageTrack(params);
     }
     const arrowTopStyle = ref();
     const arrowBottomStyle = ref();
@@ -232,7 +240,7 @@ export default defineComponent({
     //   res => {
     //     state.value = res;
     //   }
-    // );
+    // )
     return {
       loanForm,
       state,
