@@ -137,6 +137,11 @@ type TrackVO = {
   money: string;
   rate: string;
 };
+/**
+ * track
+ * @param params
+ * @returns
+ */
 export function setPageTrack(params: TrackVO) {
   return new Promise((resolve, reject) => {
     const Track = AV.Object.extend("Track");
