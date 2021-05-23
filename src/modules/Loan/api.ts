@@ -57,7 +57,7 @@ export function FixedPaymentMortgage(
     const mouthArray: mouthType = [];
     let beforeInterestTotal = 0;
     let beforePrincipalTotal = 0;
-    let surplusTotal = 0;
+    let surplusTotal = null;
     for (let i = 1; i <= mouth; i++) {
       const monthInterest =
         (money *
@@ -69,7 +69,7 @@ export function FixedPaymentMortgage(
         (Math.pow(1 + mouthRate, mouth) - 1);
       beforePrincipalTotal = beforePrincipalTotal + monthPrincipal;
       beforeInterestTotal = beforeInterestTotal + monthInterest;
-      surplusTotal = money - beforeInterestTotal;
+      surplusTotal = money - beforePrincipalTotal;
       mouthArray.push({
         monthPrincipal: getInteger(monthPrincipal),
         monthInterest: getInteger(monthInterest),
@@ -109,7 +109,7 @@ export function FixedBasisMortgage(money: number, year: number, rate: number) {
     const mouthArray: mouthType = [];
     let beforeInterestTotal = 0;
     let beforePrincipalTotal = 0;
-    let surplusTotal = 0;
+    let surplusTotal = null;
     let mouthFixedBasisMortgage = 0;
     for (let i = 1; i <= mouth; i++) {
       const monthPrincipal = eMPrincipal;

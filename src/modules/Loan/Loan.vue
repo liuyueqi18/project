@@ -123,7 +123,7 @@
 <script lang="ts">
 import dayjs from "dayjs";
 import { Toast } from "vant";
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import { FixedBasisMortgage, FixedPaymentMortgage, setPageTrack } from "./api";
 export default defineComponent({
   setup() {
@@ -237,11 +237,13 @@ export default defineComponent({
       }
       isDc.value = false;
     }
-    // FixedBasisMortgage(Number(50) * 10000, Number(10), Number(5) / 100).then(
-    //   res => {
-    //     state.value = res;
-    //   }
-    // )
+    // FixedBasisMortgage(
+    //   Number(120) * 10000,
+    //   Number(30),
+    //   Number(6.19) / 100
+    // ).then(res => {
+    //   state.value = res;
+    // });
     return {
       loanForm,
       state,
