@@ -6,6 +6,7 @@
     <img :src="drawImg" class="draw-img" />
     <div class="color-bottom">
       color picker : &nbsp;<input type="color" v-model="color" />
+      <div @click="download">下载</div>
     </div>
   </div>
 </template>
@@ -74,9 +75,30 @@ export default defineComponent({
     //   }
     // }
 
+    const download = () => {
+      myCanvas = document.getElementById("my-canvas") as HTMLCanvasElement;
+      const imgUrl = myCanvas.toDataURL("image/png");
+      if (window.navigator.msSaveOrOpenBlob) {
+        const bstr = atob(imgUrl.split(",")[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr]);
+        window.navigator.msSaveOrOpenBlob(blob, "idea" + "." + "png");
+      } else {
+        const a = document.createElement("a");
+        a.href = imgUrl;
+        a.setAttribute("download", "idea.png");
+        a.click();
+      }
+    };
+
     return {
       drawImg,
-      color
+      color,
+      download
     };
   }
 });
