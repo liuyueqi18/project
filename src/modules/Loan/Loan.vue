@@ -149,6 +149,7 @@
             @click-right-icon="e => handlerIcon(e, 'right')"
           />
         </van-cell-group>
+        <p class="end-month-remark">点击问号查看关于本功能的介绍</p>
         <div style="height:20px"></div>
         <van-button type="primary" block @click="handlerMonth">计算</van-button>
       </div>
@@ -182,7 +183,7 @@ export default defineComponent({
     const payState = reactive({
       endMonth: 0,
       nowMoney: 0,
-      monthMoney: 17000
+      monthMoney: 0
     });
     const isShowMyComponent = ref(false);
 
@@ -317,7 +318,7 @@ export default defineComponent({
       } else {
         Dialog.alert({
           message:
-            "前路漫漫, 我只是计算了按目前的薪资和利率走下去, 你最早可以还完款的时间。\n 但我相信诸君前途无量, 一定可以在未来的日子里大展宏图, 早日结清贷款, 过上自己想要的生活。\n 加油, 共勉"
+            "前路漫漫, 我只是计算了按目前的薪资和利率走下去, 你最早可以还完款的时间。\n 但我相信诸君前途无量, 一定可以在未来的日子里大展宏图, 早日结清贷款, 过上自己想要的生活。\n 加油, 共勉!"
         });
       }
     };
@@ -400,6 +401,9 @@ export default defineComponent({
     padding: 20px 16px 5vh 16px;
     & .end-month-title {
       padding-bottom: 10px;
+    }
+    & .end-month-remark {
+      padding-top: 8px;
     }
   }
 }
