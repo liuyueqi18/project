@@ -44,9 +44,18 @@
           </template></van-field
         >
       </van-cell-group>
-      <div class="btn">
-        <van-button type="primary" block @click="handlerLoan">计算</van-button>
-      </div>
+      <van-row gutter="20" style="padding:16px">
+        <van-col span="12">
+          <van-button block plain type="primary" @click="handlerYear"
+            >清空房贷年限计算</van-button
+          >
+        </van-col>
+        <van-col span="12">
+          <van-button type="primary" block @click="handlerLoan"
+            >房贷金额计算</van-button
+          >
+        </van-col>
+      </van-row>
     </div>
     <div
       class="tabel-box"
@@ -118,11 +127,37 @@
         </svg>
       </div>
     </div>
+    <van-popup
+      v-model:show="isShowMyComponent"
+      round
+      position="bottom"
+      @close="close"
+    >
+      <div class="month-content">
+        <p class="end-month-title" v-if="payState.endMonth !== 0">
+          按照目前薪资和利率, 您将{{ payState.endMonth }}个月后可以结清贷款
+        </p>
+        <van-cell-group inset>
+          <van-field
+            v-model="payState.monthMoney"
+            input-align="right"
+            type="digit"
+            label="月可支配收入"
+            right-icon="question-o"
+            left-icon="question-o"
+            @click-left-icon="e => handlerIcon(e, 'left')"
+            @click-right-icon="e => handlerIcon(e, 'right')"
+          />
+        </van-cell-group>
+        <div style="height:20px"></div>
+        <van-button type="primary" block @click="handlerMonth">计算</van-button>
+      </div>
+    </van-popup>
   </div>
 </template>
 <script lang="ts">
 import dayjs from "dayjs";
-import { Toast } from "vant";
+import { Dialog, Toast } from "vant";
 import { defineComponent, reactive, ref, watch } from "vue";
 import { FixedBasisMortgage, FixedPaymentMortgage, setPageTrack } from "./api";
 export default defineComponent({
@@ -144,6 +179,13 @@ export default defineComponent({
       totalRepayment: 0,
       mouthArray: []
     });
+    const payState = reactive({
+      endMonth: 0,
+      nowMoney: 0,
+      monthMoney: 17000
+    });
+    const isShowMyComponent = ref(false);
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     watch(loanForm, (o, n) => {
       state.value = {
@@ -189,8 +231,9 @@ export default defineComponent({
     const arrowBottomStyle = ref();
     let scrollToptimer: number | undefined;
     let scrollButtomtimer: number | undefined;
-    const isDc = ref(false);
-    function handlerMove(type: string) {
+
+    const isDc = ref(false); // easy 防抖
+    const handlerMove = (type: string) => {
       isDc.value = true;
       if (isDc.value) {
         clearInterval(scrollToptimer);
@@ -236,21 +279,67 @@ export default defineComponent({
         }, 1000);
       }
       isDc.value = false;
-    }
-    // FixedBasisMortgage(
-    //   Number(120) * 10000,
-    //   Number(30),
-    //   Number(6.19) / 100
-    // ).then(res => {
-    //   state.value = res;
-    // });
+    };
+
+    const handlerYear = () => {
+      if (!state.value.mouthArray?.length) {
+        Toast("请先将贷款信息补充完整");
+        return;
+      }
+      isShowMyComponent.value = true;
+    };
+    const handlerMonth = () => {
+      payState.nowMoney = 0;
+      payState.endMonth = 0;
+      for (let index = 0; index < state.value.mouthArray.length; index++) {
+        payState.nowMoney = Number(
+          Number(payState.nowMoney) +
+            Number(payState.monthMoney) -
+            Number(state.value.mouthArray[index].monthInterest) -
+            Number(state.value.mouthArray[index].monthPrincipal)
+        );
+        if (state.value.mouthArray[index].surplusTotal <= payState.nowMoney) {
+          payState.endMonth = index;
+          break;
+        }
+      }
+      Dialog.alert({
+        message: `按照目前薪资和利率, 您将${payState.endMonth}个月后可以结清贷款`
+      });
+    };
+    const handlerIcon = (e: Event, type?: string) => {
+      if (type === "left") {
+        Dialog.alert({
+          title: "月可支配收入",
+          message:
+            "指的是你每个月除去花销剩下的钱(含本月房贷) \n 例如: 小明本月收入20000月整, 本月吃喝玩乐花费2000元整, 房贷5000元整。可支配收入就是18000元。"
+        });
+      } else {
+        Dialog.alert({
+          message:
+            "前路漫漫, 我只是计算了按目前的薪资和利率走下去, 你最早可以还完款的时间。\n 但我相信诸君前途无量, 一定可以在未来的日子里大展宏图, 早日结清贷款, 过上自己想要的生活。\n 加油, 共勉"
+        });
+      }
+    };
+    const close = () => {
+      payState.endMonth = 0;
+      payState.nowMoney = 0;
+    };
+
     return {
       loanForm,
       state,
       handlerLoan,
+      handlerYear,
       handlerMove,
       arrowTopStyle,
-      arrowBottomStyle
+      arrowBottomStyle,
+
+      isShowMyComponent,
+      payState,
+      handlerMonth,
+      handlerIcon,
+      close
     };
   }
 });
@@ -262,6 +351,7 @@ export default defineComponent({
   color: #4d5464;
   & .btn {
     padding: 16px;
+    display: flex;
   }
   & .tabel-box {
     white-space: nowrap;
@@ -304,6 +394,12 @@ export default defineComponent({
     & .icon {
       width: 35px;
       height: 35px;
+    }
+  }
+  & .month-content {
+    padding: 20px 16px 5vh 16px;
+    & .end-month-title {
+      padding-bottom: 10px;
     }
   }
 }
