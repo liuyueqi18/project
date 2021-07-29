@@ -47,6 +47,10 @@ export default defineComponent({
         {
           name: "贷款计算",
           nameUrl: "Loan"
+        },
+        {
+          name: "拼图",
+          nameUrl: "PicturePuzzle"
         }
       ]
     });

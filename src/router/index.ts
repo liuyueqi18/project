@@ -85,6 +85,17 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "draw" */ "../modules/Draw/Draw.vue")
   },
   {
+    path: "/picturepuzzle",
+    name: "PicturePuzzle",
+    meta: {
+      title: "拼图游戏"
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "loan" */ "../modules/PicturePuzzle/PicturePuzzle.vue"
+      )
+  },
+  {
     path: "/loan",
     name: "Loan",
     meta: {
