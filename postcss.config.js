@@ -34,8 +34,6 @@ module.exports = {
     tailwindcss,
     postcssPxToViewport({
       unitToConvert: 'px',
-      // unitToConvert: 'px2vw',
-      // fontViewportUnit: 'px',
       viewportWidth: 375,
     })
   ]

@@ -1,5 +1,6 @@
 <template>
   <div class="picture-puzzle">
+    <span>todo...开发ing</span>
     <div class="top">
       <div class="choose-img"></div>
       <van-uploader :after-read="afterRead">

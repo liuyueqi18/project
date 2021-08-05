@@ -123,7 +123,7 @@ const router = createRouter({
 router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next) => {
     const routerList: Array<string> = ["Draw", "Loan"];
-    (document as Document).title = to.meta.title || "任意门";
+    document.title = to.meta.title || "任意门";
     if (routerList.indexOf(to?.name as string) >= 0) {
       next();
       return;
