@@ -376,5 +376,3 @@ export function followCustomer(custId: string, isFollow: boolean) {
       });
   });
 }
-
-// console.log('object');
