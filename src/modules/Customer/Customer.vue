@@ -102,7 +102,7 @@ import { Dialog } from "vant";
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { CustomerBO, CustomerQueryVO } from "@/modules/Customer/types";
-import SearchModel from "@/components/Customer/Search.vue";
+import SearchModel from "@/components/Customer/SearchModel.vue";
 type Props = {
   //
 };
