@@ -118,6 +118,7 @@ export default defineComponent({
 
     if (route.query.type === "add") {
       document.title = "新增客户";
+      custInfo.userId = localStorage.getItem("rym_user_id")!;
     } else if (route.query.type === "edit") {
       document.title = "编辑客户";
       getCustomerInfo();
@@ -154,6 +155,21 @@ export default defineComponent({
         });
       }
     }
+    // setInterval(() => {
+    //   setCustomer({
+    //     userId: "5f8944b4a5451b51ab88d644",
+    //     custPhone: "18981892182",
+    //     custName: "hahah2",
+    //     provinceName: "北京市",
+    //     provinceCode: "110000",
+    //     cityName: "北京市",
+    //     cityCode: "110100",
+    //     areaName: "东城区",
+    //     areaCode: "110101",
+    //     remark: "备注2",
+    //     gender: "1"
+    //   });
+    // }, 500);
 
     return {
       state,

@@ -33,28 +33,28 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "homepage" */ "../modules/HomePage.vue")
   },
-  {
-    path: "/customer",
-    name: "Customer",
-    meta: {
-      title: "客户列表"
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "customer" */ "../modules/Customer/Customer.vue"
-      )
-  },
-  {
-    path: "/customerinfopage",
-    name: "CustomerInfoPage",
-    meta: {
-      title: "客户信息"
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "customerinfopage" */ "../modules/Customer/CustomerInfoPage.vue"
-      )
-  },
+  // {
+  //   path: "/customer",
+  //   name: "Customer",
+  //   meta: {
+  //     title: "客户列表"
+  //   },
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "customer" */ "../modules/Customer/Customer.vue"
+  //     )
+  // },
+  // {
+  //   path: "/customerinfopage",
+  //   name: "CustomerInfoPage",
+  //   meta: {
+  //     title: "客户信息"
+  //   },
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "customerinfopage" */ "../modules/Customer/CustomerInfoPage.vue"
+  //     )
+  // },
   {
     path: "/githubmodel",
     name: "GithubModel",
