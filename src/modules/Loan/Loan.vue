@@ -43,6 +43,16 @@
             &nbsp; &nbsp;%
           </template></van-field
         >
+        <van-field
+          v-model="loanForm.firstDate"
+          type="text"
+          label="首次还款时间"
+          placeholder="请输入"
+          input-align="right"
+          readonly
+          @click="openTimeModal"
+        >
+        </van-field>
       </van-cell-group>
       <van-row gutter="20" style="padding:16px">
         <van-col span="12">
@@ -72,7 +82,7 @@
           <th class="tabel-th">已还利息</th>
         </tr>
         <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
-          <td class="tabel-td">第{{ i + 1 }}期</td>
+          <td class="tabel-td">第{{ i + 1 }}期 {{ item.dateMouth }}</td>
           <td class="tabel-td">{{ state.mortgageLoan }}</td>
           <td class="tabel-td">{{ item.monthInterest }}</td>
           <td class="tabel-td">{{ item.monthPrincipal }}</td>
@@ -97,7 +107,7 @@
           <th class="tabel-th">已还利息</th>
         </tr>
         <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
-          <td class="tabel-td">第{{ i + 1 }}期</td>
+          <td class="tabel-td">第{{ i + 1 }}期 {{ item.dateMouth }}</td>
           <td class="tabel-td">{{ item.mouthFixedBasisMortgage }}</td>
           <td class="tabel-td">{{ item.monthInterest }}</td>
           <td class="tabel-td">{{ item.monthPrincipal }}</td>
@@ -154,6 +164,14 @@
         <van-button type="primary" block @click="handlerMonth">计算</van-button>
       </div>
     </van-popup>
+    <van-popup v-model:show="timeState.isShow" position="bottom">
+      <van-datetime-picker
+        v-model="timeState.date"
+        type="year-month"
+        title="选择年月"
+        @confirm="confirmDate"
+        @cancel="cancelDate"
+    /></van-popup>
   </div>
 </template>
 <script lang="ts">
@@ -168,11 +186,19 @@ export default defineComponent({
     >
       ? T
       : never;
+    const timeState = reactive<{
+      isShow: boolean;
+      date: Date | string | null;
+    }>({
+      isShow: false,
+      date: null
+    });
     const loanForm = reactive({
       money: "",
       mode: "1",
       year: "",
-      rate: ""
+      rate: "",
+      firstDate: ""
     });
     const state = ref<ResultT>({
       mortgageLoan: 0,
@@ -198,7 +224,12 @@ export default defineComponent({
     });
 
     function handlerLoan() {
-      if (!loanForm.money || !loanForm.year || !loanForm.rate) {
+      if (
+        !loanForm.money ||
+        !loanForm.year ||
+        !loanForm.rate ||
+        !loanForm.firstDate
+      ) {
         Toast("请填写完成计算");
         return;
       }
@@ -206,7 +237,8 @@ export default defineComponent({
         FixedPaymentMortgage(
           Number(loanForm.money) * 10000,
           Number(loanForm.year),
-          Number(loanForm.rate) / 100
+          Number(loanForm.rate) / 100,
+          loanForm.firstDate
         ).then(res => {
           state.value = res;
         });
@@ -214,7 +246,8 @@ export default defineComponent({
         FixedBasisMortgage(
           Number(loanForm.money) * 10000,
           Number(loanForm.year),
-          Number(loanForm.rate) / 100
+          Number(loanForm.rate) / 100,
+          loanForm.firstDate
         ).then(res => {
           state.value = res;
         });
@@ -327,6 +360,18 @@ export default defineComponent({
       payState.nowMoney = 0;
     };
 
+    const openTimeModal = () => {
+      timeState.isShow = true;
+      timeState.date = loanForm.firstDate || dayjs().toDate();
+    };
+    const confirmDate = (e: string) => {
+      loanForm.firstDate = dayjs(e).format("YYYY-MM");
+      timeState.isShow = false;
+    };
+    const cancelDate = () => {
+      timeState.isShow = false;
+    };
+
     return {
       loanForm,
       state,
@@ -335,6 +380,11 @@ export default defineComponent({
       handlerMove,
       arrowTopStyle,
       arrowBottomStyle,
+
+      timeState,
+      openTimeModal,
+      confirmDate,
+      cancelDate,
 
       isShowMyComponent,
       payState,

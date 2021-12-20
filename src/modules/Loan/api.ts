@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import AV from "leancloud-storage";
 import { Toast } from "vant";
 
@@ -24,6 +25,7 @@ type mouthType = {
   monthInterest: number; // 利息
   beforeInterestTotal: number; // 已还利息
   surplusTotal: number; // 剩余本金
+  dateMouth: string;
 }[];
 /**
  * 获取四舍五入保留两位
@@ -43,7 +45,8 @@ export function getInteger(num: number) {
 export function FixedPaymentMortgage(
   money: number,
   year: number,
-  rate: number
+  rate: number,
+  firstDate: string
 ) {
   return new Promise<MortgageType>(resolve => {
     const mouth = year * 12;
@@ -58,6 +61,9 @@ export function FixedPaymentMortgage(
     let beforeInterestTotal = 0;
     let beforePrincipalTotal = 0;
     let surplusTotal = null;
+    let dateMouth = dayjs(firstDate)
+      .subtract(1, "month")
+      .format("YYYY-MM");
     for (let i = 1; i <= mouth; i++) {
       const monthInterest =
         (money *
@@ -70,12 +76,17 @@ export function FixedPaymentMortgage(
       beforePrincipalTotal = beforePrincipalTotal + monthPrincipal;
       beforeInterestTotal = beforeInterestTotal + monthInterest;
       surplusTotal = money - beforePrincipalTotal;
+      dateMouth = dayjs(dateMouth)
+        .add(1, "month")
+        .format("YYYY-MM");
+      console.log(`dateMouth`, dateMouth);
       mouthArray.push({
         monthPrincipal: getInteger(monthPrincipal),
         monthInterest: getInteger(monthInterest),
         beforeInterestTotal: getInteger(beforeInterestTotal),
         beforePrincipalTotal: getInteger(beforePrincipalTotal),
-        surplusTotal: getInteger(surplusTotal)
+        surplusTotal: getInteger(surplusTotal),
+        dateMouth: dateMouth
       });
     }
     resolve({ mortgageLoan, grossInterest, totalRepayment, mouthArray });
@@ -89,7 +100,12 @@ export function FixedPaymentMortgage(
  * @param rate 利率
  * @returns
  */
-export function FixedBasisMortgage(money: number, year: number, rate: number) {
+export function FixedBasisMortgage(
+  money: number,
+  year: number,
+  rate: number,
+  firstDate: string
+) {
   return new Promise<MortgageType>(resolve => {
     const mouth = year * 12;
     const mouthRate = rate / 12;
@@ -111,6 +127,9 @@ export function FixedBasisMortgage(money: number, year: number, rate: number) {
     let beforePrincipalTotal = 0;
     let surplusTotal = null;
     let mouthFixedBasisMortgage = 0;
+    let dateMouth = dayjs(firstDate)
+      .subtract(1, "month")
+      .format("YYYY-MM");
     for (let i = 1; i <= mouth; i++) {
       const monthPrincipal = eMPrincipal;
       const monthInterest = eMPrincipal * (mouth - i + 1) * mouthRate;
@@ -118,13 +137,17 @@ export function FixedBasisMortgage(money: number, year: number, rate: number) {
       surplusTotal = money - eMPrincipal * i;
       beforePrincipalTotal = money - surplusTotal;
       mouthFixedBasisMortgage = monthPrincipal + monthInterest;
+      dateMouth = dayjs(dateMouth)
+        .add(1, "month")
+        .format("YYYY-MM");
       mouthArray.push({
         monthPrincipal: getInteger(monthPrincipal),
         monthInterest: getInteger(monthInterest),
         beforeInterestTotal: getInteger(beforeInterestTotal),
         beforePrincipalTotal: getInteger(beforePrincipalTotal),
         surplusTotal: getInteger(surplusTotal),
-        mouthFixedBasisMortgage: getInteger(mouthFixedBasisMortgage)
+        mouthFixedBasisMortgage: getInteger(mouthFixedBasisMortgage),
+        dateMouth: dateMouth
       });
     }
     resolve({ grossInterest, totalRepayment, mouthArray });

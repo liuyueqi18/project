@@ -29,10 +29,6 @@ export default defineComponent({
     const state = reactive<State>({
       childList: [
         {
-          name: "客户",
-          nameUrl: "Customer"
-        },
-        {
           name: "GIT",
           nameUrl: "GithubModel"
         },
