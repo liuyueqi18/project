@@ -69,52 +69,62 @@
     </div>
     <div
       class="tabel-box"
+      ref="tabelRef"
       v-if="loanForm.mode === '2' && state.mouthArray.length"
     >
-      <table class="table">
-        <tr class="tabel-tr">
-          <th class="tabel-th">期数</th>
-          <th class="tabel-th">每月还款</th>
-          <th class="tabel-th">偿还利息</th>
-          <th class="tabel-th">偿还本金</th>
-          <th class="tabel-th">剩余本金</th>
-          <th class="tabel-th">已还本金</th>
-          <th class="tabel-th">已还利息</th>
-        </tr>
-        <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
-          <td class="tabel-td">第{{ i + 1 }}期 {{ item.dateMouth }}</td>
-          <td class="tabel-td">{{ state.mortgageLoan }}</td>
-          <td class="tabel-td">{{ item.monthInterest }}</td>
-          <td class="tabel-td">{{ item.monthPrincipal }}</td>
-          <td class="tabel-td">{{ item.surplusTotal }}</td>
-          <td class="tabel-td">{{ item.beforePrincipalTotal }}</td>
-          <td class="tabel-td">{{ item.beforeInterestTotal }}</td>
-        </tr>
+      <table>
+        <thead>
+          <tr>
+            <th>期数</th>
+            <th>每月还款</th>
+            <th>偿还利息</th>
+            <th>偿还本金</th>
+            <th>剩余本金</th>
+            <th>已还本金</th>
+            <th>已还利息</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, i) in state.mouthArray" :key="i" :ref="`trRef${i}`">
+            <td>第{{ i + 1 }}期 {{ item.dateMouth }}</td>
+            <td>{{ state.mortgageLoan }}</td>
+            <td>{{ item.monthInterest }}</td>
+            <td>{{ item.monthPrincipal }}</td>
+            <td>{{ item.surplusTotal }}</td>
+            <td>{{ item.beforePrincipalTotal }}</td>
+            <td>{{ item.beforeInterestTotal }}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
-    <div class="tabel-box">
-      <table
-        class="table"
-        v-if="loanForm.mode === '1' && state.mouthArray.length"
-      >
-        <tr class="tabel-tr">
-          <th class="tabel-th">期数</th>
-          <th class="tabel-th">每月还款</th>
-          <th class="tabel-th">偿还利息</th>
-          <th class="tabel-th">偿还本金</th>
-          <th class="tabel-th">剩余本金</th>
-          <th class="tabel-th">已还本金</th>
-          <th class="tabel-th">已还利息</th>
-        </tr>
-        <tr v-for="(item, i) in state.mouthArray" :key="i" class="tabel-tr">
-          <td class="tabel-td">第{{ i + 1 }}期 {{ item.dateMouth }}</td>
-          <td class="tabel-td">{{ item.mouthFixedBasisMortgage }}</td>
-          <td class="tabel-td">{{ item.monthInterest }}</td>
-          <td class="tabel-td">{{ item.monthPrincipal }}</td>
-          <td class="tabel-td">{{ item.surplusTotal }}</td>
-          <td class="tabel-td">{{ item.beforePrincipalTotal }}</td>
-          <td class="tabel-td">{{ item.beforeInterestTotal }}</td>
-        </tr>
+    <div
+      class="tabel-box"
+      ref="tabelRef"
+      v-if="loanForm.mode === '1' && state.mouthArray.length"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th>期数</th>
+            <th>每月还款</th>
+            <th>偿还利息</th>
+            <th>偿还本金</th>
+            <th>剩余本金</th>
+            <th>已还本金</th>
+            <th>已还利息</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, i) in state.mouthArray" :key="i" :ref="`trRef${i}`">
+            <td>第{{ i + 1 }}期 {{ item.dateMouth }}</td>
+            <td>{{ item.mouthFixedBasisMortgage }}</td>
+            <td>{{ item.monthInterest }}</td>
+            <td>{{ item.monthPrincipal }}</td>
+            <td>{{ item.surplusTotal }}</td>
+            <td>{{ item.beforePrincipalTotal }}</td>
+            <td>{{ item.beforeInterestTotal }}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div class="sticky">
@@ -177,7 +187,7 @@
 <script lang="ts">
 import dayjs from "dayjs";
 import { Dialog, Toast } from "vant";
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, nextTick, reactive, ref, watch } from "vue";
 import { FixedBasisMortgage, FixedPaymentMortgage, setPageTrack } from "./api";
 export default defineComponent({
   setup() {
@@ -212,6 +222,7 @@ export default defineComponent({
       monthMoney: 0
     });
     const isShowMyComponent = ref(false);
+    const tabelRef = ref<Element | null>(null);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     watch(loanForm, (o, n) => {
@@ -293,6 +304,9 @@ export default defineComponent({
         setTimeout(() => {
           arrowTopStyle.value = "";
         }, 1000);
+        nextTick(() => {
+          tabelRef.value?.scrollTo(0, 0);
+        });
       } else if (type === "bottom") {
         scrollButtomtimer = setInterval(function() {
           const top = document.documentElement.scrollTop;
@@ -311,6 +325,9 @@ export default defineComponent({
         setTimeout(() => {
           arrowBottomStyle.value = "";
         }, 1000);
+        nextTick(() => {
+          tabelRef.value?.scrollTo(0, state.value.mouthArray.length * 150);
+        });
       }
       isDc.value = false;
     };
@@ -375,6 +392,7 @@ export default defineComponent({
     return {
       loanForm,
       state,
+      tabelRef,
       handlerLoan,
       handlerYear,
       handlerMove,
@@ -405,30 +423,53 @@ export default defineComponent({
     display: flex;
   }
   & .tabel-box {
-    white-space: nowrap;
-    box-sizing: border-box;
-    max-width: 343px;
-    overflow: scroll;
+    width: 343px;
+    overflow: auto;
+    height: 85vh;
     margin: 0 auto;
-    border: none;
-    padding-bottom: 40px;
-    & .table {
-      width: 100%;
-      border: none;
+    border: 1px solid #f5f5f5;
+    & td {
+      border: 1px solid #f5f5f5;
+      width: 90px;
+      height: 30px;
+      text-align: center;
+    }
+    & th {
+      border: 1px solid #f5f5f5;
+      width: 90px;
+      height: 30px;
+      text-align: center;
+    }
+    & th {
+      background-color: #edf2fd;
+    }
+    & table {
+      table-layout: fixed;
+      width: 343px;
       border-collapse: collapse;
       border-spacing: 0;
-      & .tabel-tr {
-        width: 100%;
-        & .tabel-th {
-          background: rgba(78, 128, 239, 0.1);
-          border: 1px solid #e4e7ed;
-        }
-        & td {
-          padding: 4px;
-          text-align: center;
-          border: 1px solid #e4e7ed;
-        }
-      }
+    }
+    & td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background-color: #edf2fd;
+      width: 110px;
+    }
+    & th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background-color: #edf2fd;
+      width: 110px;
+    }
+    & thead tr th {
+      position: sticky;
+      top: 0;
+    }
+    & th:first-child {
+      z-index: 2;
+      background-color: #edf2fd;
     }
   }
   & .sticky {

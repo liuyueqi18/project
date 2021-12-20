@@ -79,7 +79,6 @@ export function FixedPaymentMortgage(
       dateMouth = dayjs(dateMouth)
         .add(1, "month")
         .format("YYYY-MM");
-      console.log(`dateMouth`, dateMouth);
       mouthArray.push({
         monthPrincipal: getInteger(monthPrincipal),
         monthInterest: getInteger(monthInterest),
